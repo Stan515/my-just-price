@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mon Juste Prix — démonstration</title>
+  <meta name="description" content="Prototype de démonstration : la réduction de train qui s'applique toute seule. Simulation, aucune donnée réelle.">
+  <!-- Police très lisible (optionnelle : sans connexion, une police système prend le relais) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="evitement" href="#demo" id="lien-evitement"></a>
+
+  <p class="banniere-demo" id="banniere-demo" role="note"></p>
+
+  <!-- Message affiché seulement si config.js contient une erreur -->
+  <div class="erreur-config" id="erreur-config" hidden role="alert">
+    <h1>Le fichier config.js contient une erreur</h1>
+    <p>La démonstration ne peut pas démarrer. La cause la plus fréquente : une virgule oubliée,
+      un guillemet non fermé, ou un nombre écrit avec une virgule (18,40) au lieu d'un point (18.40).</p>
+    <p>Annulez votre dernière modification dans GitHub (onglet « History » du fichier) ou relisez les lignes modifiées.
+      Le README explique comment repérer l'erreur.</p>
+  </div>
+
+  <header class="entete" id="entete">
+    <div class="marque">
+      <svg class="marque-logo" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+        <rect x="3" y="9" width="34" height="22" rx="5" fill="currentColor"/>
+        <circle cx="3" cy="20" r="4" class="marque-trou"/>
+        <circle cx="37" cy="20" r="4" class="marque-trou"/>
+        <path d="M13 20.5l4.5 4.5L27 15.5" fill="none" class="marque-coche" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <p class="marque-nom" id="marque-nom"></p>
+        <p class="marque-accroche" id="marque-accroche"></p>
+      </div>
+    </div>
+
+    <div class="commandes">
+      <label class="commande-scenario">
+        <span id="label-scenario"></span>
+        <select id="choix-scenario"></select>
+      </label>
+      <div class="progression">
+        <p id="texte-etape" class="texte-etape"></p>
+        <div class="barre" aria-hidden="true"><div class="barre-remplie" id="barre-remplie"></div></div>
+      </div>
+      <div class="boutons-nav">
+        <button type="button" id="btn-precedent" class="btn btn-secondaire"></button>
+        <button type="button" id="btn-suivant" class="btn btn-principal"></button>
+        <button type="button" id="btn-recommencer" class="btn btn-discret"></button>
+        <button type="button" id="btn-presentation" class="btn btn-discret" aria-pressed="false"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="demo" class="scene" tabindex="-1">
+    <section class="colonne-telephone" aria-labelledby="titre-telephone">
+      <h2 class="sr-only" id="titre-telephone"></h2>
+      <div class="telephone">
+        <div class="telephone-encoche" aria-hidden="true"></div>
+        <div class="telephone-statut" aria-hidden="true">
+          <span id="heure-telephone"></span>
+          <span class="statut-icones">
+            <svg viewBox="0 0 18 12" width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
+            <svg viewBox="0 0 26 12" width="26" height="12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg>
+          </span>
+        </div>
+        <div class="telephone-appli" id="telephone-appli">
+          <p class="appli-nom" id="appli-nom" aria-hidden="true"></p>
+          <div class="ecran" id="ecran"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panneau-jury" aria-labelledby="titre-jury">
+      <div class="jury-entete">
+        <h2 id="titre-jury"></h2>
+        <button type="button" class="btn btn-discret btn-replier" id="btn-replier" aria-expanded="true" aria-controls="jury-contenu"></button>
+      </div>
+      <div id="jury-contenu" class="jury-contenu">
+        <p class="jury-etiquettes">
+          <span class="etiquette etiquette-moment" id="jury-moment"></span>
+          <span class="etiquette" id="jury-public"></span>
+        </p>
+        <h3 class="jury-titre-etape" id="jury-titre-etape"></h3>
+        <div class="jury-bloc jury-bloc-voit">
+          <h4 id="jury-label-voit"></h4>
+          <p id="jury-voit"></p>
+        </div>
+        <div class="jury-bloc jury-bloc-coulisses">
+          <h4 id="jury-label-coulisses"></h4>
+          <p id="jury-coulisses"></p>
+        </div>
+        <div class="jury-bloc jury-bloc-frein">
+          <h4 id="jury-label-frein"></h4>
+          <p id="jury-frein"></p>
+        </div>
+        <p class="jury-pied">
+          <span id="jury-fictif"></span>
+          <span id="aide-clavier"></span>
+        </p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Annonces pour les lecteurs d'écran -->
+  <div class="sr-only" aria-live="polite" aria-atomic="true" id="annonce"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
