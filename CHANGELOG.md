@@ -1,5 +1,10 @@
 # Historique des versions
 
+## v0.1.3 — Trajet plus long pour Jeanne (6 novembre 2026)
+
+- **S2 · Jeanne** va maintenant de Hyères à Marseille Saint-Charles (1 h 24). Prix plein fictif : 19,80 €.
+- Le panneau jury compare l'aller-retour à deux : 79,20 € au prix plein, 19,80 € avec le service.
+
 ## v0.1.2 — Trois personas, démarche et abonnements (6 novembre 2026)
 
 **Personas**

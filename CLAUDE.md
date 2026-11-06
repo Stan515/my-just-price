@@ -136,7 +136,7 @@ Chaque scénario est entièrement décrit dans `config.js` : persona fictif, tra
 | # | Scénario | Persona fictif | Trajet (prix fictifs) | Fin |
 |---|---|---|---|---|
 | S1 | Étudiante boursière — tarif accordé | Nadia, 20 ans, étudiante à Marseille, prend BlaBlaCar pour rentrer le week-end | Marseille → Le Luc | Prix confirmé + contrôle « Valide » + « Mes accords » |
-| S2 | Retraitée à mobilité réduite — tarif accordé | Jeanne, 74 ans, Hyères, marche avec une canne | Hyères → Toulon | Tarif réduit + accompagnant gratuit + assistance en gare |
+| S2 | Retraitée à mobilité réduite — tarif accordé | Jeanne, 74 ans, Hyères, marche avec une canne | Hyères → Marseille | Tarif réduit + accompagnant gratuit + assistance en gare |
 | S3 | Conditions non remplies | Marc, 51 ans, cariste en CDI, revenus modestes au-dessus des plafonds | Les Arcs → Nice | Abonnements éligibles, meilleur prix choisi pour lui, recours si la situation a changé, rattrapage |
 
 **Règles d'affichage décidées après relecture :**

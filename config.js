@@ -351,11 +351,11 @@ window.CONFIG = {
       persona: { nom: "Jeanne", age: 74, description: "Retraitée, vit à Hyères, marche avec une canne." },
       trajet: {
         depart: "Hyères",
-        arrivee: "Toulon",
+        arrivee: "Marseille Saint-Charles",
         date: "mercredi 18 novembre",
-        heureDepart: "14:05",
-        heureArrivee: "14:26",
-        prixPlein: 6.60                        // prix FICTIF
+        heureDepart: "09:48",
+        heureArrivee: "11:12",
+        prixPlein: 19.80                       // prix FICTIF
       },
       reponseSimulee: { droit: true, dateFin: "2031-03-31" },
       etapes: [
@@ -363,8 +363,8 @@ window.CONFIG = {
           ecran: "besoin",
           titre: "Le besoin",
           voyageur: {
-            contexte: "{nom} veut aller voir ses petits-enfants à Toulon, {date}.",
-            pensee: "Le train ? Avec ma canne, les marches, le quai… et il faudrait payer aussi pour ma voisine qui m’accompagne. J’attendrai que mon fils ait le temps de m’emmener.",
+            contexte: "{nom} veut passer la journée chez ses petits-enfants à Marseille, {date}.",
+            pensee: "Le train ? Avec ma canne, les marches, le quai… et il faudrait payer deux billets, le mien et celui de ma voisine qui m’accompagne. Près de 80 € aller-retour ! J’attendrai que mon fils ait le temps de m’emmener.",
             bouton: "Chercher un train"
           },
           jury: {
@@ -481,10 +481,10 @@ window.CONFIG = {
             labelTrain: "Votre train",
             labelAncien: "Prix habituel",
             labelNouveau: "Votre prix",
-            economie: "Vous économisez {economie}.",
+            economie: "Vous économisez {economie}, et votre accompagnant voyage gratuitement.",
             extras: [
-              "Accompagnant : 0 €",
-              "Assistance réservée : un agent vous attend à {depart} à 13 h 50."
+              "Accompagnant : 0 € au lieu de {prixPlein}",
+              "Assistance réservée : un agent vous attend à {depart} à 9 h 30."
             ],
             note: "Ce prix s’applique à tous vos trajets, jusqu’au {dateFin}.",
             bouton: "Acheter mon billet"
@@ -492,7 +492,7 @@ window.CONFIG = {
           jury: {
             voit: "Le train, le prix confirmé ({prix} au lieu de {prixPlein}), l’accompagnant à 0 € et l’heure de l’assistance.",
             coulisses: "Le distributeur transmet la réservation d’assistance au service en gare, sans motif détaillé.",
-            frein: "Tous les freins levés sur un seul écran : prix, accompagnement, accès au train.",
+            frein: "Financier : aller-retour à deux, 79,20 € au prix plein contre 19,80 € avec le service, soit 4 fois moins. Moins cher que l’essence, le péage et le parking à Marseille. Physique : l’assistance est réservée.",
             moment: 2
           }
         },
