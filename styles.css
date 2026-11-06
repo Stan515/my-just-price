@@ -273,7 +273,7 @@ button, select, input { font: inherit; color: inherit; }
   animation: tourne .9s linear infinite;
 }
 @keyframes tourne { to { transform: rotate(360deg); } }
-.verif-resultat { flex: 1; display: flex; flex-direction: column; gap: .8rem; padding-top: 2rem; }
+.verif-resultat { flex: 1; display: flex; flex-direction: column; gap: .8rem; padding-top: .8rem; }
 .verif-icone {
   width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center;
   font-size: 2.2rem; font-weight: 700;
@@ -382,6 +382,44 @@ button, select, input { font: inherit; color: inherit; }
 .offre-reco-prix { font-size: 1.8rem; color: var(--principal); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .offre-raison { font-size: .95rem; color: var(--texte-doux); }
 .offre-raison strong { color: var(--texte); }
+
+/* Démarche en trois temps */
+.demarche ol {
+  margin: .35rem 0 0; padding: 0; list-style: none; counter-reset: etape; display: grid; gap: .5rem;
+}
+.demarche li { counter-increment: etape; display: flex; gap: .65rem; align-items: flex-start; }
+.demarche li::before {
+  content: counter(etape); flex: none; width: 1.7rem; height: 1.7rem; border-radius: 50%;
+  border: 2px solid var(--principal); color: var(--principal); font-weight: 700;
+  display: grid; place-items: center; font-size: .9rem;
+}
+
+/* Connexion : roue crantée */
+.connexion-attente { margin: auto 0; display: grid; justify-items: center; gap: 1.2rem; text-align: center; padding: 1.5rem 0; }
+.roue { width: 88px; height: 88px; animation: tourne 2.4s linear infinite; }
+.roue.arretee { animation: none; }
+.roue-corps { fill: var(--principal); }
+.roue-trou { fill: var(--fond); }
+.connexion-message { font-size: 1.15rem; font-weight: 700; max-width: 18rem; min-height: 3.4em; }
+
+/* Avantages cochés */
+.extras { display: grid; gap: .4rem; }
+.extras ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+.extras li { display: flex; gap: .55rem; align-items: flex-start; font-weight: 700; }
+.extras-coche { color: var(--ok); flex: none; }
+
+/* Abonnements éligibles */
+.liste-abonnements { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.carte-abonnement { background: var(--surface); border: 2px solid var(--bord); border-radius: var(--rayon); padding: .75rem .9rem; display: grid; gap: .25rem; }
+.abonnement-tete { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.abonnement-tete h5 { margin: 0; font-size: 1rem; }
+.abonnement-prix { font-weight: 700; color: var(--principal); }
+
+/* Résumé du train sur l'écran du prix */
+.carte-train-resume { flex-direction: column; align-items: stretch; gap: .5rem; }
+.carte-train-resume .horaires { font-size: 1.25rem; }
+.train-gares { font-weight: 700; }
+.train-date { color: var(--texte-doux); font-size: .95rem; }
 
 /* ---------- Panneau jury ---------- */
 .panneau-jury {

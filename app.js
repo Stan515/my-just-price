@@ -216,6 +216,10 @@
         titreEcran(v.titre),
         badgeConnexion(),
         h("p", { class: "texte-fort", text: t(v.texte) }),
+        (v.demarche && v.demarche.length) ? h("div", { class: "demarche" }, [
+          v.labelDemarche ? h("h4", { class: "sous-titre", text: t(v.labelDemarche) }) : null,
+          h("ol", {}, v.demarche.map(function (x) { return h("li", { text: t(x) }); }))
+        ]) : null,
         v.engagement ? h("p", { class: "engagement" }, [
           h("span", { class: "engagement-icone", "aria-hidden": "true", text: "✓" }),
           h("span", { text: t(v.engagement) })
@@ -252,12 +256,29 @@
     },
 
     connexion: function (v) {
+      var messages = (v.messages || []).map(function (m) { return t(m); });
+      var texte = h("p", { class: "connexion-message", text: messages[0] || "" });
+      var roue = roueCrantee();
+      var zoneBouton = h("div", { class: "ecran-actions" });
+      var bouton = h("button", { type: "button", class: "btn btn-principal btn-large", text: t(v.bouton), onclick: function () { aller(1, true); } });
+      var finir = function () {
+        roue.classList.add("arretee");
+        texte.textContent = t(v.termine);
+        zoneBouton.appendChild(bouton);
+        annoncer(t(v.termine));
+      };
+      if (reduitMouvement) { finir(); }
+      else {
+        annoncer(messages[0] || "");
+        messages.slice(1).forEach(function (m, i) {
+          minuteries.push(setTimeout(function () { texte.textContent = m; annoncer(m); }, 1500 * (i + 1)));
+        });
+        minuteries.push(setTimeout(finir, 1500 * Math.max(messages.length, 1) + 200));
+      }
       return [
         h("div", { class: "fc-entete" }, [badgeConnexion(true)]),
-        titreEcran(v.titre),
-        h("ul", { class: "liste-connexion" }, (v.options || []).map(function (o) {
-          return h("li", {}, [h("button", { type: "button", class: "btn btn-option", text: t(o), onclick: function () { aller(1, true); } })]);
-        })),
+        h("div", { class: "connexion-attente" }, [roue, texte]),
+        zoneBouton,
         h("p", { class: "note", text: t(v.note) })
       ];
     },
@@ -265,45 +286,58 @@
     verification: function (v) {
       var sc = scenario();
       var ok = sc.reponseSimulee && sc.reponseSimulee.droit;
-      var zone = h("div", { class: "verif" });
-      var attente = h("div", { class: "verif-attente" }, [
-        h("div", { class: "rouet", "aria-hidden": "true" }),
-        h("p", { text: t(v.enCours) })
-      ]);
-      var resultat = h("div", { class: "verif-resultat " + (ok ? "verif-ok" : "verif-neutre") }, [
+      var abonnements = (!ok && sc.abonnements) ? sc.abonnements : [];
+      annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
+      return [h("div", { class: "verif-resultat " + (ok ? "verif-ok" : "verif-neutre") }, [
         h("p", { class: "verif-icone", "aria-hidden": "true", text: ok ? "✓" : "i" }),
         h("h3", { class: "ecran-titre", tabindex: "-1", text: t(v.resultatTitre) }),
         v.texte ? h("p", { class: "texte-fort", text: t(v.texte) }) : null,
-        h("dl", { class: "carte-accord" }, [
-          v.labelDocument ? h("div", {}, [h("dt", { text: t(v.labelDocument) }), h("dd", { text: t("{document}") })]) : null,
-          (ok && v.labelValidite) ? h("div", {}, [h("dt", { text: t(v.labelValidite) }), h("dd", { text: t("{dateFin}") })]) : null
-        ]),
+        (ok && v.labelValidite) ? h("dl", { class: "carte-accord" }, [
+          h("div", {}, [h("dt", { text: t(v.labelValidite) }), h("dd", { text: t("{dateFin}") })])
+        ]) : null,
+        listeExtras(v.extras, v.titreExtras),
+        abonnements.length ? h("h4", { class: "sous-titre", text: t(v.titreAbonnements) }) : null,
+        abonnements.length ? h("ul", { class: "liste-abonnements" }, abonnements.map(function (a) {
+          return h("li", { class: "carte-abonnement" }, [
+            h("div", { class: "abonnement-tete" }, [
+              h("h5", { text: t(a.nom) }),
+              a.pour ? h("span", { class: "etiquette", text: t(a.pour) }) : null
+            ]),
+            h("p", { text: t(a.avantage) }),
+            a.prix ? h("p", { class: "abonnement-prix", text: t(a.prix) }) : null
+          ]);
+        })) : null,
         boutonPrincipal(v.bouton)
-      ]);
-      zone.appendChild(attente);
-      var montrer = function () {
-        attente.remove();
-        zone.appendChild(resultat);
-        annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
-      };
-      if (reduitMouvement) montrer();
-      else { annoncer(t(v.enCours)); minuteries.push(setTimeout(montrer, 1400)); }
-      return [zone];
+      ])];
     },
 
     resultat: function (v) {
+      var sc = scenario();
       var val = valeurs();
       var nouveau = h("span", { class: "prix-nouveau-valeur", "aria-hidden": "true", text: reduitMouvement ? val.prix : val.prixPlein });
       var ancien = h("span", { class: "prix-ancien-valeur" + (reduitMouvement ? " barre-prix" : ""), "aria-hidden": "true", text: val.prixPlein });
       var bloc = [
         titreEcran(v.titre),
+        h("div", { class: "carte-train carte-train-resume" }, [
+          h("div", {}, [
+            v.labelTrain ? h("p", { class: "petit-label", text: t(v.labelTrain) }) : null,
+            h("p", { class: "train-gares", text: sc.trajet.depart + " → " + sc.trajet.arrivee }),
+            h("p", { class: "train-date", text: sc.trajet.date })
+          ]),
+          h("p", { class: "horaires" }, [
+            h("span", { class: "heure", text: sc.trajet.heureDepart }),
+            h("span", { class: "fleche", "aria-hidden": "true", text: "→" }),
+            h("span", { class: "heure", text: sc.trajet.heureArrivee })
+          ])
+        ]),
         h("div", { class: "bloc-prix" }, [
           h("p", { class: "sr-only", text: t(T.prixLecteur) }),
           h("p", { class: "prix-ancien", "aria-hidden": "true" }, [h("span", { class: "petit-label", text: t(v.labelAncien) }), ancien]),
           h("p", { class: "prix-nouveau", "aria-hidden": "true" }, [h("span", { class: "petit-label", text: t(v.labelNouveau) }), nouveau])
         ]),
         h("p", { class: "economie", text: t(v.economie) }),
-        h("p", { class: "note", text: t(v.note) }),
+        listeExtras(v.extras),
+        v.note ? h("p", { class: "note", text: t(v.note) }) : null,
         boutonPrincipal(v.bouton)
       ];
       if (!reduitMouvement) {
@@ -337,6 +371,7 @@
           ]),
           h("div", { class: "billet-qr" }, [fauxQR(sc.id + sc.trajet.depart, t(v.altQr))])
         ]),
+        listeExtras(v.extras),
         v.note ? h("p", { class: "note", text: t(v.note) }) : null,
         boutonPrincipal(v.bouton)
       ];
@@ -354,6 +389,7 @@
           h("div", {}, [h("dt", { text: t(v.labelTrajet) }), h("dd", { text: sc.trajet.depart + " → " + sc.trajet.arrivee })]),
           h("div", {}, [h("dt", { text: t(v.labelDate) }), h("dd", { text: sc.trajet.date })])
         ]),
+        listeExtras(v.extras),
         h("p", { class: "note", text: t(v.note) })
       ];
     },
@@ -363,7 +399,7 @@
       var bouton = h("button", { type: "button", class: "btn btn-secondaire btn-large", text: t(v.boutonRetirer) });
       var ligne = h("dl", { class: "carte-accord" + (etat.accordRetire ? " retire" : "") }, [
         h("div", {}, [h("dt", { text: t(v.labelConnexion) }), h("dd", { text: t("{connexion}") })]),
-        h("div", {}, [h("dt", { text: t(v.labelDocument) }), h("dd", { text: t("{document}") })]),
+        h("div", {}, [h("dt", { text: t(v.labelConsulte) }), h("dd", { text: t(v.consulte) })]),
         h("div", {}, [h("dt", { text: t(v.labelDateAccord) }), h("dd", { text: t(v.dateAccord) })]),
         h("div", {}, [h("dt", { text: t(v.labelValidite) }), h("dd", { text: t("{dateFin}") })])
       ]);
@@ -420,19 +456,41 @@
         h("div", { class: "encart" }, [h("p", { text: t(v.texteRemboursement) })]),
         boutonPrincipal(v.bouton)
       ];
-    },
-
-    porteDroits: function (v) {
-      return [
-        titreEcran(v.titre),
-        h("p", { class: "texte-fort", text: t(v.texte) }),
-        h("div", { class: "ecran-actions" }, [
-          h("button", { type: "button", class: "btn btn-principal btn-large", text: t(v.bouton) })
-        ]),
-        h("p", { class: "note", text: t(v.note) })
-      ];
     }
   };
+
+  // Liste d'avantages avec coche (facultative)
+  function listeExtras(extras, titre) {
+    if (!extras || !extras.length) return null;
+    return h("div", { class: "extras" }, [
+      titre ? h("h4", { class: "sous-titre", text: t(titre) }) : null,
+      h("ul", {}, extras.map(function (x) {
+        return h("li", {}, [h("span", { class: "extras-coche", "aria-hidden": "true", text: "✓" }), h("span", { text: t(x) })]);
+      }))
+    ]);
+  }
+
+  // Roue crantée qui tourne pendant la recherche (décorative)
+  function roueCrantee() {
+    var ns = "http://www.w3.org/2000/svg", dents = 10, rExt = 46, rInt = 37, pts = [];
+    for (var i = 0; i < dents * 4; i++) {
+      var a = (Math.PI * 2 * i) / (dents * 4) - Math.PI / 2;
+      var r = (i % 4 === 1 || i % 4 === 2) ? rExt : rInt;
+      pts.push((50 + r * Math.cos(a)).toFixed(2) + "," + (50 + r * Math.sin(a)).toFixed(2));
+    }
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("class", "roue");
+    svg.setAttribute("aria-hidden", "true");
+    var poly = document.createElementNS(ns, "polygon");
+    poly.setAttribute("points", pts.join(" "));
+    poly.setAttribute("class", "roue-corps");
+    var trou = document.createElementNS(ns, "circle");
+    trou.setAttribute("cx", "50"); trou.setAttribute("cy", "50"); trou.setAttribute("r", "14");
+    trou.setAttribute("class", "roue-trou");
+    svg.appendChild(poly); svg.appendChild(trou);
+    return svg;
+  }
 
   // Pastille du service de connexion (nom seul, sans logo officiel)
   function badgeConnexion(grand) {

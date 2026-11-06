@@ -16,7 +16,7 @@ Rail Innovation Challenge (Agorize × Ferrocampus), mission **« Le train pour t
 
 Aucune installation n'est nécessaire, et la démo fonctionne même sans Internet. Sans connexion, seule la police change.
 
-**Astuce :** pour ouvrir directement un scénario, ajoutez son code à la fin de l'adresse, par exemple `index.html#S4`.
+**Astuce :** pour ouvrir directement un scénario, ajoutez son code à la fin de l'adresse, par exemple `index.html#S3`.
 
 ## 2. Le publier sur GitHub Pages (une adresse web à partager)
 
@@ -74,8 +74,8 @@ Le prototype se construit par étapes, appelées incréments. Chacune peut être
 
 | Version | Contenu | État |
 |---|---|---|
-| v0.1 | Téléphone + panneau jury, scénarios S1 (tarif réduit accordé) et S4 (conditions non remplies) | ✅ livrée |
-| v0.2 | Scénarios S2 (demandeur d'emploi) et S3 (étudiant boursier) | à venir |
+| v0.1 | Téléphone + panneau jury, 3 scénarios : Nadia (étudiante), Jeanne (mobilité réduite), Marc (conditions non remplies) | ✅ livrée |
+| v0.2 | Scénario demandeur d'emploi | à venir |
 | v0.3 | Page de visuels pour le jury (6 schémas SVG) | à venir |
 | v0.4 | Porte d'entrée « on vient vers vous » | à venir |
 | v0.5 | Vie du droit : retrait de l'accord, renouvellement automatique | à venir |

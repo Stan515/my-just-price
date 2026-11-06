@@ -133,12 +133,16 @@ Un **service de droits tarifaires** porté par la Région et intégré aux canau
 
 Chaque scénario est entièrement décrit dans `config.js` : persona fictif, trajet, prix plein, réduction, source, réponse simulée, textes des étapes et du panneau jury.
 
-| # | Scénario | Persona fictif (exemple) | Trajet (prix fictifs) | Fin |
+| # | Scénario | Persona fictif | Trajet (prix fictifs) | Fin |
 |---|---|---|---|---|
-| S1 | Ménage modeste — droit trouvé | Nadia, 42 ans, aide à domicile, petite ville du Var, rendez-vous médical à Marseille | Brignoles → Marseille | Billet au vrai prix + contrôle « Valide » |
-| S2 | Demandeur d'emploi — droit trouvé | Karim, 29 ans, entretien d'embauche à Toulon | Hyères → Toulon | Idem, date de fin courte |
-| S3 | Étudiant boursier — droit trouvé | Léa, 20 ans, stage à Aix | Manosque → Aix-en-Provence | Idem |
-| S4 | Aucun droit trouvé | Marc, 51 ans, travailleur à faibles revenus sans prestation | Draguignan → Nice | Message neutre, autres réductions, plan B, rattrapage, porte vers les droits |
+| S1 | Étudiante boursière — tarif accordé | Nadia, 20 ans, étudiante à Marseille, prend BlaBlaCar pour rentrer le week-end | Marseille → Le Luc | Prix confirmé + contrôle « Valide » + « Mes accords » |
+| S2 | Retraitée à mobilité réduite — tarif accordé | Jeanne, 74 ans, Hyères, marche avec une canne | Hyères → Toulon | Tarif réduit + accompagnant gratuit + assistance en gare |
+| S3 | Conditions non remplies | Marc, 51 ans, cariste en CDI, revenus modestes au-dessus des plafonds | Les Arcs → Nice | Abonnements éligibles, meilleur prix choisi pour lui, recours si la situation a changé, rattrapage |
+
+**Règles d'affichage décidées après relecture :**
+- La connexion passe par **FranceConnect** uniquement : pas de logos ni de comptes partenaires, une roue crantée pendant la recherche.
+- La personne ne voit **jamais quel document est vérifié** : seulement le résultat (tarif accordé + date de fin, ou abonnements éligibles).
+- Quand le tarif n'est pas accordé, la réponse est **directe** et le service **propose une solution** (abonnements, meilleur prix expliqué). Pas de message vague, pas de promotion d'autres droits.
 
 **Étapes types d'un scénario « droit trouvé » :**
 1. Le besoin (contexte du persona, moment 1)

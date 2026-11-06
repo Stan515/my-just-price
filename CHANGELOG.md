@@ -1,5 +1,19 @@
 # Historique des versions
 
+## v0.1.2 — Trois personas, démarche et abonnements (6 novembre 2026)
+
+**Personas**
+- **S1 · Nadia devient étudiante boursière.** Elle prend BlaBlaCar pour rentrer chez ses parents ; elle préférerait le train, moins contraignant, mais le trouve trop cher. Trajet Marseille → Le Luc, tarif réduit accordé.
+- **Nouveau S2 · Jeanne, 74 ans, retraitée à mobilité réduite.** Hyères → Toulon. Elle obtient le tarif réduit, la place gratuite pour son accompagnant et l'assistance en gare réservée automatiquement (conditions fictives).
+- **S3 · Marc** (ancien S4) : conditions non remplies.
+
+**Étapes**
+- **Étape 3 :** la démarche est expliquée en trois temps : se connecter, « nous cherchons le prix en fonction de votre situation », le prix s'affiche.
+- **Étape 5 :** une seule connexion FranceConnect. Les comptes partenaires (impots.gouv, ameli…) sont supprimés. Une roue crantée tourne pendant la recherche, puis le bouton « Voir le résultat » apparaît.
+- **Étape 6 :** le document vérifié n'est plus affiché. Si le tarif est accordé : la date de validité, plus les avantages inclus. Si le tarif n'est pas accordé : « Vous êtes éligible à ces abonnements », avec leur description et leur prix.
+- **Étape 7 :** le train (gares, date, horaires) s'affiche avec la confirmation du prix.
+- « Mes accords » indique « Les seuls éléments nécessaires au calcul de votre prix » au lieu du nom du document.
+
 ## v0.1.1 — Corrections après relecture (6 novembre 2026)
 
 **Les deux scénarios**
