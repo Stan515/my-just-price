@@ -345,12 +345,12 @@ window.CONFIG = {
 
     /* =============================================================
        S2 — JEANNE — retraitée à mobilité réduite
-       réduction + accompagnant gratuit + assistance en gare
+       réduction + assistance en gare
        ============================================================= */
     {
       id: "S2",
       actif: true,
-      titre: "S2 · Jeanne, mobilité réduite — tarif + accompagnant",
+      titre: "S2 · Jeanne, mobilité réduite — tarif + assistance",
       public: "pmr",
       persona: { nom: "Jeanne", age: 74, description: "Retraitée, vit à Hyères, marche avec une canne." },
       trajet: {
@@ -368,11 +368,11 @@ window.CONFIG = {
           titre: "Le besoin",
           voyageur: {
             contexte: "{nom} veut passer la journée chez ses petits-enfants à Marseille, {date}.",
-            pensee: "Le train ? Avec ma canne, les marches, le quai… et il faudrait payer deux billets, le mien et celui de ma voisine qui m’accompagne. Près de 80 € aller-retour ! J’attendrai que mon fils ait le temps de m’emmener.",
+            pensee: "Le train ? Avec ma canne, les marches, le quai… Et presque 40 € l’aller-retour ! J’attendrai que mon fils ait le temps de m’emmener.",
             bouton: "Chercher un train"
           },
           jury: {
-            voit: "Jeanne renonce au train pour trois raisons à la fois : l’accès physique, la peur d’être seule en gare, et le prix pour deux.",
+            voit: "Jeanne renonce au train pour trois raisons à la fois : l’accès physique, la peur d’être seule en gare, et le prix.",
             coulisses: "Rien encore. Les personnes à mobilité réduite cumulent les freins : elles dépendent d’un proche ou renoncent à sortir.",
             frein: "Physique, psychologique et financier : le train paraît impossible avant même d’être regardé.",
             moment: 1
@@ -465,15 +465,14 @@ window.CONFIG = {
             labelValidite: "Valable jusqu’au",
             titreExtras: "Inclus avec votre tarif",
             extras: [
-              "Votre accompagnant voyage gratuitement.",
               "Assistance en gare : un agent vous accompagne pour monter et descendre du train."
             ],
             bouton: "Voir mon prix"
           },
           jury: {
-            voit: "Le tarif réduit, et deux avantages que Jeanne ne connaissait pas : l’accompagnant gratuit et l’assistance en gare.",
+            voit: "Le tarif réduit, et un avantage que Jeanne ne connaissait pas : l’assistance en gare.",
             coulisses: "Les avantages liés au même droit sont activés en même temps (conditions fixées par la Région, fictives ici). L’assistance est réservée automatiquement à l’achat.",
-            frein: "Physique et psychologique : elle ne sera pas seule sur le quai. Financier : elle ne paie pas pour sa voisine.",
+            frein: "Physique et psychologique : elle ne sera pas seule sur le quai. Financier : elle paie moitié prix.",
             moment: 3
           }
         },
@@ -485,18 +484,17 @@ window.CONFIG = {
             labelTrain: "Votre train",
             labelAncien: "Prix habituel",
             labelNouveau: "Votre prix",
-            economie: "Vous économisez {economie}, et votre accompagnant voyage gratuitement.",
+            economie: "Vous économisez {economie}.",
             extras: [
-              "Accompagnant : 0 € au lieu de {prixPlein}",
               "Assistance réservée : un agent vous attend à {depart} à 9 h 30."
             ],
             note: "Ce prix s’applique à tous vos trajets, jusqu’au {dateFin}.",
             bouton: "Acheter mon billet"
           },
           jury: {
-            voit: "Le train, le prix confirmé ({prix} au lieu de {prixPlein}), l’accompagnant à 0 € et l’heure de l’assistance.",
+            voit: "Le train, le prix confirmé ({prix} au lieu de {prixPlein}) et l’heure de l’assistance.",
             coulisses: "Le distributeur transmet la réservation d’assistance au service en gare, sans motif détaillé.",
-            frein: "Financier : aller-retour à deux, 79,20 € au prix plein contre 19,80 € avec le service, soit 4 fois moins. Moins cher que l’essence, le péage et le parking à Marseille. Physique : l’assistance est réservée.",
+            frein: "Financier : l’aller-retour passe de 39,60 € à 19,80 €. Moins cher que l’essence, le péage et le parking à Marseille. Physique : l’assistance est réservée.",
             moment: 2
           }
         },
@@ -510,13 +508,13 @@ window.CONFIG = {
             labelTarif: "Tarif",
             tarif: "Votre tarif",
             labelPrix: "Prix payé",
-            extras: ["2 voyageurs : vous et votre accompagnant", "Assistance en gare réservée"],
+            extras: ["Assistance en gare réservée"],
             altQr: "Code QR du billet (factice)",
             bouton: "Passer au contrôle"
           },
           jury: {
-            voit: "Un seul billet pour deux voyageurs, avec l’assistance réservée.",
-            coulisses: "Le billet porte un niveau de tarif neutre et le nombre de voyageurs.",
+            voit: "Un billet ordinaire, avec l’assistance réservée.",
+            coulisses: "Le billet porte un niveau de tarif neutre.",
             frein: "Rien à demander au guichet, rien à justifier.",
             moment: 4
           }
@@ -529,11 +527,10 @@ window.CONFIG = {
             statut: "Valide",
             labelTrajet: "Trajet",
             labelDate: "Date",
-            extras: ["2 voyageurs"],
             note: "Le contrôleur ne voit pas pourquoi le tarif est réduit."
           },
           jury: {
-            voit: "« Valide, 2 voyageurs ». Rien d’autre.",
+            voit: "« Valide ». Rien d’autre.",
             coulisses: "Le motif n’est jamais transmis au contrôleur.",
             frein: "Psychologique : pas de carte à sortir, pas d’explication à donner devant les autres voyageurs.",
             moment: 5
@@ -703,25 +700,6 @@ window.CONFIG = {
           }
         },
         {
-          ecran: "planB",
-          titre: "Si la situation a changé",
-          voyageur: {
-            titre: "Votre situation a changé récemment ?",
-            texte: "Les documents des administrations peuvent avoir quelques semaines de retard. Faites vérifier votre situation actuelle :",
-            options: [
-              { titre: "Envoyer un document", texte: "Une seule pièce, prise en photo. Réponse sous 48 h." },
-              { titre: "Voir un conseiller", texte: "Dans un espace France Services ou au guichet d’une gare." }
-            ],
-            bouton: "Mon trajet est bientôt"
-          },
-          jury: {
-            voit: "Un recours simple, réservé aux situations qui ont changé depuis la dernière mise à jour des bases.",
-            coulisses: "Un agent valide le document et enregistre le droit dans le même service. Il ne voit que « tarif applicable : oui ».",
-            frein: "Exclusion numérique et cas particuliers : personne ne reste bloqué par la machine.",
-            moment: 3
-          }
-        },
-        {
           ecran: "rattrapage",
           titre: "Le rattrapage",
           voyageur: {
@@ -732,7 +710,7 @@ window.CONFIG = {
           },
           jury: {
             voit: "La personne peut partir tout de suite, sans perdre le tarif réduit si son droit est confirmé ensuite.",
-            coulisses: "La différence est remboursée automatiquement une fois le droit validé par un conseiller.",
+            coulisses: "Si la situation de Marc change et que son droit est confirmé plus tard, la différence est remboursée automatiquement.",
             frein: "Délai : l’urgence du trajet ne fait plus perdre la réduction.",
             moment: 4
           }

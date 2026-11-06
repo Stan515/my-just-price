@@ -1,5 +1,10 @@
 # Historique des versions
 
+## v0.1.5 — Jeanne seule, Marc en 8 étapes (6 novembre 2026)
+
+- **S2 · Jeanne** voyage seule : l'accompagnant est retiré partout (résultat, prix, billet, contrôle, panneau jury). Elle garde le tarif réduit et l'assistance en gare. Panneau jury : l'aller-retour passe de 39,60 € à 19,80 €.
+- **S3 · Marc** : l'étape « Votre situation a changé récemment ? » est supprimée. Le scénario compte 8 étapes et se termine sur le rattrapage.
+
 ## v0.1.4 — Mention d'intégration SNCF Connect (6 novembre 2026) — à valider
 
 - Sous le nom du service, en haut du téléphone : « Dans l'appli du transporteur · ex. SNCF Connect ».
