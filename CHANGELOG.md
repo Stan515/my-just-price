@@ -1,5 +1,13 @@
 # Historique des versions
 
+## v0.1.4 — Mention d'intégration SNCF Connect (6 novembre 2026) — à valider
+
+- Sous le nom du service, en haut du téléphone : « Dans l'appli du transporteur · ex. SNCF Connect ».
+- En bas du panneau jury : la phrase d'intégration et l'annotation « Analyse virtuelle, maquette non officielle ».
+- Le coin du panneau jury pour l'étape « La recherche » cite SNCF Connect.
+- Aucun logo ni aucune charte de la SNCF n'est utilisé.
+- **Pour retirer la mention :** dans `config.js`, mettre `mentionIntegration: false` dans le bloc `increments`. Pour revenir exactement à la version précédente : v0.1.3.
+
 ## v0.1.3 — Trajet plus long pour Jeanne (6 novembre 2026)
 
 - **S2 · Jeanne** va maintenant de Hyères à Marseille Saint-Charles (1 h 24). Prix plein fictif : 19,80 €.

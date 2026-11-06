@@ -610,6 +610,11 @@
     $("marque-nom").textContent = C.service.nom;
     $("marque-accroche").textContent = C.service.accroche || "";
     $("appli-nom").textContent = C.service.nom;
+    var avecIntegration = !!(C.increments && C.increments.mentionIntegration && C.service.integration);
+    $("appli-integration").textContent = avecIntegration ? C.service.integration : "";
+    $("appli-integration").hidden = !avecIntegration;
+    $("jury-integration").textContent = avecIntegration ? (C.service.integrationJury || "") : "";
+    $("jury-integration").hidden = !(avecIntegration && C.service.integrationJury);
     $("label-scenario").textContent = T.choisirScenario;
     $("btn-precedent").textContent = "← " + T.precedent;
     $("btn-suivant").textContent = T.suivant + " →";

@@ -41,6 +41,9 @@ window.CONFIG = {
     accroche: "Le train au prix que vous payez vraiment.",
     region: "Région Sud",                  // territoire de référence
     connexion: "FranceConnect",            // service de connexion de l'État (nom seul, sans logo)
+    // Mention d'intégration (affichée si increments.mentionIntegration vaut true)
+    integration: "Dans l’appli du transporteur · ex. SNCF Connect",
+    integrationJury: "Intégration : ce service est une brique ajoutée à SNCF Connect et à l’appli régionale. Aucune nouvelle appli à télécharger. Analyse virtuelle, maquette non officielle.",
     banniereDemo: "Démonstration — simulation, aucune donnée réelle"
   },
 
@@ -52,6 +55,7 @@ window.CONFIG = {
      --------------------------------------------------------------- */
   increments: {
     modePresentation: true,       // touche P : plein écran pour la projection
+    mentionIntegration: true,     // mention « Dans l’appli du transporteur · ex. SNCF Connect » (false = la retirer)
     porteOnVientVersVous: false,  // à venir
     renouvellement: false,        // à venir
     sansSmartphone: false         // à venir
@@ -179,7 +183,7 @@ window.CONFIG = {
           },
           jury: {
             voit: "Le prix plein ({prixPlein}) et, juste à côté, un lien « Voir mon prix » affiché pour TOUS les voyageurs.",
-            coulisses: "Le service est intégré à l’appli ou au site où la personne cherche déjà son trajet. Pas d’appli à télécharger.",
+            coulisses: "Le service est intégré là où la personne cherche déjà son trajet : SNCF Connect, l’appli régionale, le site du transporteur. Pas d’appli à télécharger.",
             frein: "Financier perçu : le prix plein n’est plus le dernier mot. Le lien est le même pour tous, donc il ne désigne personne.",
             moment: 2
           }
