@@ -74,7 +74,7 @@ Le prototype se construit par étapes, appelées incréments. Chacune peut être
 
 | Version | Contenu | État |
 |---|---|---|
-| v0.1 | Téléphone + panneau jury, scénarios S1 (droit trouvé) et S4 (aucun droit trouvé) | ✅ livrée |
+| v0.1 | Téléphone + panneau jury, scénarios S1 (tarif réduit accordé) et S4 (conditions non remplies) | ✅ livrée |
 | v0.2 | Scénarios S2 (demandeur d'emploi) et S3 (étudiant boursier) | à venir |
 | v0.3 | Page de visuels pour le jury (6 schémas SVG) | à venir |
 | v0.4 | Porte d'entrée « on vient vers vous » | à venir |

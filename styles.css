@@ -340,6 +340,49 @@ button, select, input { font: inherit; color: inherit; }
 .carte-option h4 { margin-bottom: .2rem; }
 .encart { background: var(--accent-doux); border-radius: var(--rayon); padding: .9rem 1rem; font-weight: 700; }
 
+/* Engagement sur les données */
+.engagement {
+  display: flex; gap: .6rem; align-items: flex-start;
+  background: var(--principal-doux); border-radius: var(--rayon); padding: .85rem 1rem;
+  font-weight: 700;
+}
+.engagement-icone {
+  flex: none; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: var(--principal); color: var(--principal-texte);
+  display: grid; place-items: center; font-size: .9rem; margin-top: .05rem;
+}
+
+/* Pastille du service de connexion (sans logo officiel) */
+.badge-connexion {
+  display: inline-flex; align-items: center; gap: .5rem; align-self: flex-start;
+  border: 2px solid var(--neutre); color: var(--neutre); background: var(--neutre-doux);
+  border-radius: 99px; padding: .3rem .85rem .3rem .4rem; font-weight: 700; font-size: .95rem;
+}
+.badge-connexion-icone {
+  width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--neutre); position: relative; flex: none;
+}
+.badge-connexion-icone::before {
+  content: ""; position: absolute; left: 50%; top: 22%; width: 34%; height: 34%;
+  transform: translateX(-50%); border-radius: 50%; background: var(--neutre-doux);
+}
+.badge-connexion-icone::after {
+  content: ""; position: absolute; left: 50%; bottom: 16%; width: 58%; height: 26%;
+  transform: translateX(-50%); border-radius: 99px 99px 4px 4px; background: var(--neutre-doux);
+}
+.fc-entete { display: flex; justify-content: center; padding: .4rem 0 .2rem; border-bottom: 1px solid var(--bord); }
+.badge-connexion-grand { font-size: 1.15rem; padding: .45rem 1.1rem .45rem .5rem; align-self: center; }
+.badge-connexion-grand .badge-connexion-icone { width: 2rem; height: 2rem; }
+
+/* Meilleur prix recommandé */
+.offre-reco {
+  background: var(--surface); border: 2px solid var(--principal); border-radius: 18px;
+  padding: .9rem 1rem; display: grid; gap: .5rem;
+}
+.offre-reco-ligne { display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-weight: 700; }
+.offre-reco-prix { font-size: 1.8rem; color: var(--principal); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.offre-raison { font-size: .95rem; color: var(--texte-doux); }
+.offre-raison strong { color: var(--texte); }
+
 /* ---------- Panneau jury ---------- */
 .panneau-jury {
   background: var(--surface); border-radius: 20px; border: 1px solid var(--bord);

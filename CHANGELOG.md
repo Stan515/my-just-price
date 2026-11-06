@@ -1,5 +1,26 @@
 # Historique des versions
 
+## v0.1.1 — Corrections après relecture (6 novembre 2026)
+
+**Les deux scénarios**
+- **Connexion par FranceConnect.** L'organisme interrogé (Assurance maladie, C2S) n'apparaît plus sur le téléphone, seulement dans le panneau jury. Le nom FranceConnect est affiché sans le logo officiel, réservé aux services habilités.
+- **Explication et accord.** Les listes « Nous demandons / Nous ne demandons pas » sont supprimées. Elles sont remplacées par un engagement net : « Nous ne consultons que les éléments essentiels au calcul de votre prix. Rien d'autre. » Le bouton devient « Continuer avec FranceConnect ».
+- **« Petits revenus » est retiré** du lien universel « Voir mon prix ».
+- **Le résultat précise le document vérifié**, défini par public dans `config.js` (`document`), et sa date de validité.
+- **« Simulé » est retiré** des boutons d'achat et de l'écran du contrôleur. La bannière de démonstration reste en haut de page.
+
+**S1 — Nadia**
+- Bouton de départ : « Chercher un train ».
+- Le billet n'affiche plus de mention de paiement.
+
+**S4 — Marc, refondu : « conditions non remplies »**
+- Marc a des revenus modestes, mais au-dessus des plafonds de la Région.
+- La réponse est directe : « Pas de tarif réduit pour vous », avec le document vérifié.
+- Nouvel écran « Votre meilleur prix » : le service choisit l'offre la moins chère, explique pourquoi et montre les autres offres.
+- « Votre situation a changé récemment ? » : envoyer un document ou voir un conseiller.
+- Rattrapage conservé.
+- Étape « porte vers les droits » supprimée. Le scénario compte 9 étapes.
+
 ## v0.1 — L'idée en 2 minutes (6 novembre 2026)
 
 **Ajouté**

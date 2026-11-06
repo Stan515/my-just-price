@@ -76,6 +76,10 @@
       reduction: Math.round((pub.reduction || 0) * 100) + " %",
       dateFin: dateLongue(sc.reponseSimulee && sc.reponseSimulee.dateFin),
       source: pub.source || "",
+      document: pub.document || "",
+      connexion: C.service.connexion || "",
+      meilleurPrix: (sc.autresOffres && sc.autresOffres.length)
+        ? euros(Math.min.apply(null, sc.autresOffres.map(function (o) { return o.prix; }))) : "",
       sourceJury: pub.sourceJury || "",
       public: pub.libelleJury || "",
       service: C.service.nom,
@@ -208,24 +212,14 @@
     },
 
     explication: function (v) {
-      var pub = publicDe(scenario());
       return [
         titreEcran(v.titre),
+        badgeConnexion(),
         h("p", { class: "texte-fort", text: t(v.texte) }),
-        h("div", { class: "question-posee" }, [
-          h("p", { class: "petit-label", text: t(v.labelQuestion) }),
-          h("p", { text: t(pub.questionPosee) })
-        ]),
-        h("div", { class: "deux-listes" }, [
-          h("div", { class: "liste-oui" }, [
-            h("h4", { text: t(v.titreOui) }),
-            h("ul", {}, (v.listeOui || []).map(function (x) { return h("li", { text: t(x) }); }))
-          ]),
-          h("div", { class: "liste-non" }, [
-            h("h4", { text: t(v.titreNon) }),
-            h("ul", {}, (v.listeNon || []).map(function (x) { return h("li", { text: t(x) }); }))
-          ])
-        ]),
+        v.engagement ? h("p", { class: "engagement" }, [
+          h("span", { class: "engagement-icone", "aria-hidden": "true", text: "✓" }),
+          h("span", { text: t(v.engagement) })
+        ]) : null,
         boutonPrincipal(v.bouton)
       ];
     },
@@ -248,10 +242,10 @@
           ]),
           h("p", { class: "note", id: "note-accord", text: t(v.note) })
         ]),
-        h("details", { class: "detail-non" }, [
-          h("summary", { text: t(v.lienNon) }),
-          h("p", { text: t(v.detailNon) })
-        ]),
+        v.engagement ? h("p", { class: "engagement" }, [
+          h("span", { class: "engagement-icone", "aria-hidden": "true", text: "✓" }),
+          h("span", { text: t(v.engagement) })
+        ]) : null,
         erreur,
         boutonPrincipal(v.bouton, function () { avancerDepuisAccord(true); })
       ];
@@ -259,7 +253,7 @@
 
     connexion: function (v) {
       return [
-        h("p", { class: "bandeau-etat", text: t(v.entete) }),
+        h("div", { class: "fc-entete" }, [badgeConnexion(true)]),
         titreEcran(v.titre),
         h("ul", { class: "liste-connexion" }, (v.options || []).map(function (o) {
           return h("li", {}, [h("button", { type: "button", class: "btn btn-option", text: t(o), onclick: function () { aller(1, true); } })]);
@@ -279,14 +273,18 @@
       var resultat = h("div", { class: "verif-resultat " + (ok ? "verif-ok" : "verif-neutre") }, [
         h("p", { class: "verif-icone", "aria-hidden": "true", text: ok ? "✓" : "i" }),
         h("h3", { class: "ecran-titre", tabindex: "-1", text: t(v.resultatTitre) }),
-        h("p", { class: "texte-fort", text: t(v.resultat) }),
+        v.texte ? h("p", { class: "texte-fort", text: t(v.texte) }) : null,
+        h("dl", { class: "carte-accord" }, [
+          v.labelDocument ? h("div", {}, [h("dt", { text: t(v.labelDocument) }), h("dd", { text: t("{document}") })]) : null,
+          (ok && v.labelValidite) ? h("div", {}, [h("dt", { text: t(v.labelValidite) }), h("dd", { text: t("{dateFin}") })]) : null
+        ]),
         boutonPrincipal(v.bouton)
       ]);
       zone.appendChild(attente);
       var montrer = function () {
         attente.remove();
         zone.appendChild(resultat);
-        annoncer(t(v.resultatTitre) + ". " + t(v.resultat));
+        annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
       };
       if (reduitMouvement) montrer();
       else { annoncer(t(v.enCours)); minuteries.push(setTimeout(montrer, 1400)); }
@@ -339,7 +337,7 @@
           ]),
           h("div", { class: "billet-qr" }, [fauxQR(sc.id + sc.trajet.depart, t(v.altQr))])
         ]),
-        h("p", { class: "note", text: t(v.note) }),
+        v.note ? h("p", { class: "note", text: t(v.note) }) : null,
         boutonPrincipal(v.bouton)
       ];
     },
@@ -361,12 +359,11 @@
     },
 
     accords: function (v) {
-      var pub = publicDe(scenario());
       var message = h("p", { class: "confirmation", role: "status" });
       var bouton = h("button", { type: "button", class: "btn btn-secondaire btn-large", text: t(v.boutonRetirer) });
       var ligne = h("dl", { class: "carte-accord" + (etat.accordRetire ? " retire" : "") }, [
-        h("div", {}, [h("dt", { text: t(v.labelOrganisme) }), h("dd", { text: capitaliser(t(pub.source)) })]),
-        h("div", {}, [h("dt", { text: t(v.labelQuestion) }), h("dd", { text: t(v.question) })]),
+        h("div", {}, [h("dt", { text: t(v.labelConnexion) }), h("dd", { text: t("{connexion}") })]),
+        h("div", {}, [h("dt", { text: t(v.labelDocument) }), h("dd", { text: t("{document}") })]),
         h("div", {}, [h("dt", { text: t(v.labelDateAccord) }), h("dd", { text: t(v.dateAccord) })]),
         h("div", {}, [h("dt", { text: t(v.labelValidite) }), h("dd", { text: t("{dateFin}") })])
       ]);
@@ -380,16 +377,27 @@
       return [titreEcran(v.titre), ligne, h("div", { class: "ecran-actions" }, [bouton]), message];
     },
 
-    nonTrouve: function (v) {
+    meilleurPrix: function (v) {
       var sc = scenario();
       var offres = (sc.autresOffres || []).slice().sort(function (a, b) { return a.prix - b.prix; });
+      var reco = offres[0], autres = offres.slice(1);
       return [
         titreEcran(v.titre),
         h("p", { class: "texte-fort", text: t(v.texte) }),
-        h("h4", { class: "sous-titre", text: t(v.titreOffres) }),
-        h("ul", { class: "liste-offres" }, offres.map(function (o) {
+        reco ? h("div", { class: "offre-reco" }, [
+          h("p", { class: "petit-label", text: t(v.labelRecommande) }),
+          h("div", { class: "offre-reco-ligne" }, [
+            h("span", { text: t(reco.libelle) }),
+            h("strong", { class: "offre-reco-prix", text: euros(reco.prix) })
+          ]),
+          reco.raison ? h("p", { class: "offre-raison" }, [
+            h("strong", { text: t(v.labelPourquoi) + " : " }), t(reco.raison)
+          ]) : null
+        ]) : null,
+        autres.length ? h("h4", { class: "sous-titre", text: t(v.titreAutres) }) : null,
+        autres.length ? h("ul", { class: "liste-offres" }, autres.map(function (o) {
           return h("li", {}, [h("span", { text: t(o.libelle) }), h("strong", { text: euros(o.prix) })]);
-        })),
+        })) : null,
         boutonPrincipal(v.bouton)
       ];
     },
@@ -397,6 +405,7 @@
     planB: function (v) {
       return [
         titreEcran(v.titre),
+        v.texte ? h("p", { class: "texte-fort", text: t(v.texte) }) : null,
         h("ul", { class: "liste-options" }, (v.options || []).map(function (o) {
           return h("li", { class: "carte-option" }, [h("h4", { text: t(o.titre) }), h("p", { text: t(o.texte) })]);
         })),
@@ -425,6 +434,14 @@
     }
   };
 
+  // Pastille du service de connexion (nom seul, sans logo officiel)
+  function badgeConnexion(grand) {
+    return h("p", { class: "badge-connexion" + (grand ? " badge-connexion-grand" : "") }, [
+      h("span", { class: "badge-connexion-icone", "aria-hidden": "true" }),
+      h("span", { text: t("{connexion}") })
+    ]);
+  }
+
   function capitaliser(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
   /* ---------- Affichage ---------- */
@@ -438,7 +455,7 @@
     ecran.innerHTML = "";
     ecran.className = "ecran ecran-" + et.ecran;
     var rendu = ecrans[et.ecran];
-    (rendu ? rendu(v) : []).forEach(function (el) { ecran.appendChild(el); });
+    (rendu ? rendu(v) : []).forEach(function (el) { if (el) ecran.appendChild(el); });
     ecran.scrollTop = 0;
     $("titre-telephone").textContent = t(T.telephoneLabel);
 
