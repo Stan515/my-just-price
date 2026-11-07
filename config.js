@@ -379,12 +379,17 @@ window.CONFIG = {
           ecran: "verification",
           titre: "Le résultat",
           voyageur: {
+            messages: [
+              "Connexion sécurisée avec {connexion}…",
+              "Nous cherchons votre prix en fonction de votre situation…"
+            ],
             resultatTitre: "Tarif réduit accordé",
+            texte: "Votre situation permet une réduction.",
             labelValidite: "Valable jusqu’au",
             bouton: "Voir mon prix"
           },
           jury: {
-            voit: "« Tarif réduit accordé » et sa date de fin. Aucun document, aucun statut affiché.",
+            voit: "Une roue crantée pendant la connexion à FranceConnect et la recherche, puis « Tarif réduit accordé : votre situation permet une réduction », avec la date de fin. Aucun document, aucun statut affiché.",
             coulisses: "Le service se connecte à FranceConnect, puis interroge {sourceJury} via API Particulier. Réponse : OUI + date de fin. Il ne garde qu’un identifiant pseudonyme, un niveau de tarif et la date de fin.",
             frein: "Délai : quelques secondes au lieu de plusieurs semaines (dossier, courrier, carte postale).",
             moment: 3
@@ -712,7 +717,12 @@ window.CONFIG = {
           ecran: "verification",
           titre: "Le résultat",
           voyageur: {
+            messages: [
+              "Connexion sécurisée avec {connexion}…",
+              "Nous cherchons votre prix en fonction de votre situation…"
+            ],
             resultatTitre: "Tarif réduit accordé",
+            texte: "Votre situation permet une réduction.",
             labelValidite: "Valable jusqu’au",
             titreExtras: "Inclus avec votre tarif",
             extras: [
@@ -1045,6 +1055,10 @@ window.CONFIG = {
           ecran: "verification",
           titre: "Le résultat",
           voyageur: {
+            messages: [
+              "Connexion sécurisée avec {connexion}…",
+              "Nous cherchons votre prix en fonction de votre situation…"
+            ],
             resultatTitre: "Pas de tarif réduit pour vous",
             texte: "Votre situation ne correspond pas aux conditions du tarif réduit fixées par la Région.",
             titreAbonnements: "Vous êtes éligible à ces abonnements",

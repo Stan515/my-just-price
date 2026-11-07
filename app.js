@@ -359,8 +359,7 @@
       var sc = scenario();
       var ok = sc.reponseSimulee && sc.reponseSimulee.droit;
       var abonnements = (!ok && sc.abonnements) ? sc.abonnements : [];
-      annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
-      return [h("div", { class: "verif-resultat " + (ok ? "verif-ok" : "verif-neutre") }, [
+      var resultat = h("div", { class: "verif-resultat " + (ok ? "verif-ok" : "verif-neutre") }, [
         h("p", { class: "verif-icone", "aria-hidden": "true", text: ok ? "✓" : "i" }),
         h("h3", { class: "ecran-titre", tabindex: "-1", text: t(v.resultatTitre) }),
         v.texte ? h("p", { class: "texte-fort", text: t(v.texte) }) : null,
@@ -380,7 +379,30 @@
           ]);
         })) : null,
         boutonPrincipal(v.bouton)
-      ])];
+      ]);
+      var messages = (v.messages || []).map(function (m) { return t(m); });
+      // Sans messages (ou mouvements réduits) : le résultat s'affiche tout de suite
+      if (!messages.length || reduitMouvement) {
+        annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
+        return [resultat];
+      }
+      // Sinon : roue crantée pendant la connexion et la recherche, puis le résultat
+      var zone = h("div", { class: "verif" });
+      var texte = h("p", { class: "connexion-message", text: messages[0] });
+      var attente = h("div", { class: "connexion-attente" }, [badgeConnexion(true), roueCrantee(), texte]);
+      zone.appendChild(attente);
+      annoncer(messages[0]);
+      messages.slice(1).forEach(function (m, i) {
+        minuteries.push(setTimeout(function () { texte.textContent = m; annoncer(m); }, 1400 * (i + 1)));
+      });
+      minuteries.push(setTimeout(function () {
+        attente.remove();
+        zone.appendChild(resultat);
+        annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
+        var titre = resultat.querySelector(".ecran-titre");
+        if (titre && document.activeElement && zone.contains(document.activeElement) === false && document.activeElement.closest && document.activeElement.closest("#ecran")) titre.focus();
+      }, 1400 * messages.length + 300));
+      return [zone];
     },
 
     resultat: function (v) {
