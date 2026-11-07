@@ -1,5 +1,23 @@
 # Historique des versions
 
+## v0.2 — Module abonnement et réabonnement (7 novembre 2026)
+
+**Nouveau : choisir entre billet et abonnement**
+- **Écran « Que voulez-vous faire ? »** (étape 2) pour les trois personas : « Acheter un billet », « Prendre un abonnement » ou « Me réabonner ». Un menu « Parcours » en haut de la démo permet aussi de choisir directement. Liens directs : `index.html#S1-abonnement`, `index.html#S3-reabonnement`.
+- **Abonnement** : même chemin que le billet (recherche, démarche, accord, résultat), puis le prix mensuel confirmé et l'abonnement chargé.
+  - Nadia : 18 € par mois au lieu de 72 €.
+  - Jeanne : 44,50 € par mois au lieu de 89 €, avec l'assistance en gare.
+  - Marc : pas de tarif réduit. Le service lui recommande l'abonnement travail, dont l'employeur rembourse la moitié.
+- **Réabonnement en un clic** : le droit est déjà vérifié, donc pas de nouvelle démarche. Un rappel avant la fin du mois, le prix confirmé, l'abonnement rechargé.
+- Dans `config.js`, `{ reprendre: "explication" }` recopie une étape du parcours billet, ce qui évite de réécrire les mêmes textes.
+
+**Modifications**
+- **Étape 5 (connexion FranceConnect) supprimée** : on passe directement de l'accord au résultat.
+- **Étape 3** : « Nous nous connectons à FranceConnect pour trouver le prix qui correspond à votre situation. »
+- **Étape 4** : la phrase « Vous pourrez retirer votre accord… » est retirée.
+- **Étape « recherche »** : « pour tout le monde » est retiré.
+- **Bouton « Imprimer mon billet » / « Imprimer mon abonnement »** sur l'écran du billet. Il ouvre l'impression du billet seul sur GitHub Pages ; dans le lien Claude, seul le message de confirmation s'affiche.
+
 ## v0.1.5 — Jeanne seule, Marc en 8 étapes (6 novembre 2026)
 
 - **S2 · Jeanne** voyage seule : l'accompagnant est retiré partout (résultat, prix, billet, contrôle, panneau jury). Elle garde le tarif réduit et l'assistance en gare. Panneau jury : l'aller-retour passe de 39,60 € à 19,80 €.

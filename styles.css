@@ -423,6 +423,27 @@ button, select, input { font: inherit; color: inherit; }
 .train-gares { font-weight: 700; }
 .train-date { color: var(--texte-doux); font-size: .95rem; }
 
+/* Écran de choix : billet ou abonnement */
+.carte-choix { background: var(--surface); border: 1px solid var(--bord); border-radius: 18px; padding: .9rem 1rem; display: grid; gap: .55rem; }
+.carte-choix h4 { font-size: 1.05rem; }
+
+/* Abonnement : prix mensuel et mention */
+.suffixe-prix { font-size: 1rem; font-weight: 700; color: var(--texte-doux); margin-left: .25em; }
+.prix-plein { white-space: nowrap; }
+.prix-nouveau .suffixe-prix { font-size: 1.2rem; }
+.mention-abonnement { font-weight: 700; color: var(--texte-doux); font-size: .9rem; max-width: 9.5rem; }
+
+/* Imprimer mon billet */
+.ecran-actions-imprimer { margin-top: 0; padding-top: 0; }
+.btn-imprimer { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; }
+.icone-imprimante {
+  width: 1.15rem; height: .8rem; border: 2px solid currentColor; border-radius: 3px; position: relative; flex: none;
+}
+.icone-imprimante::before {
+  content: ""; position: absolute; left: 50%; transform: translateX(-50%); top: -.45rem;
+  width: .65rem; height: .4rem; border: 2px solid currentColor; border-bottom: 0; border-radius: 2px 2px 0 0;
+}
+
 /* ---------- Panneau jury ---------- */
 .panneau-jury {
   background: var(--surface); border-radius: 20px; border: 1px solid var(--bord);
@@ -488,6 +509,18 @@ body.presentation .panneau-jury { padding: 2rem 2.2rem; }
 
 /* ---------- Impression ---------- */
 @media print {
+  body.impression-billet .banniere-demo,
+  body.impression-billet .entete,
+  body.impression-billet .panneau-jury,
+  body.impression-billet .telephone-encoche,
+  body.impression-billet .telephone-statut,
+  body.impression-billet .appli-entete,
+  body.impression-billet .ecran > :not(.billet):not(.ecran-titre) { display: none !important; }
+  body.impression-billet .scene { display: block; padding: 0; }
+  body.impression-billet .telephone,
+  body.impression-billet .telephone-appli { all: unset; display: block; }
+  body.impression-billet .ecran { overflow: visible; padding: 0; animation: none; }
+  body.impression-billet .billet { border: 2px dashed #000; max-width: 12cm; color: #000; background: #fff; }
   .banniere-demo { background: none; color: #000; border-bottom: 1px solid #000; }
   .boutons-nav, .commande-scenario, .evitement { display: none; }
   .panneau-jury { position: static; }

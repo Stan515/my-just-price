@@ -128,8 +128,17 @@ window.CONFIG = {
        jury     : les 3 blocs du panneau jury + le numéro du moment (1 à 6)
 
      Types d'écran disponibles :
-       besoin, recherche, explication, accord, connexion, verification,
-       resultat, billet, controle, accords, meilleurPrix, planB, rattrapage
+       besoin, accueil, recherche, explication, accord, verification,
+       resultat, billet, controle, accords, meilleurPrix, rattrapage, reabonnement
+
+     PARCOURS ABONNEMENT ET RÉABONNEMENT
+     L'écran « accueil » propose : Acheter un billet / Prendre un abonnement / Me réabonner.
+       etapes               : le parcours billet (et le début commun, jusqu'à « accueil »)
+       abonnement           : la formule (prix plein mensuel, gares, période)
+       parcoursAbonnement   : les étapes après « accueil » pour un abonnement
+       parcoursReabonnement : les étapes après « accueil » pour un réabonnement
+     { reprendre: "explication" } recopie l'étape du même type du parcours billet ;
+     on ne précise que ce qui change (voyageur, jury, titre).
      « extras » (facultatif) : liste d'avantages affichés avec une coche.
      Pour retirer une étape : supprimez son bloc { … } en entier.
      --------------------------------------------------------------- */
@@ -153,6 +162,126 @@ window.CONFIG = {
         prixPlein: 18.40                       // prix FICTIF
       },
       reponseSimulee: { droit: true, dateFin: "2027-08-31" },
+      abonnement: {
+        formule: "Abonnement mensuel",
+        depart: "Marseille Saint-Charles",
+        arrivee: "Le Luc – Le Cannet",
+        date: "décembre 2026",
+        mention: "Trajets illimités, aller et retour",
+        prixPlein: 72.00                      // prix FICTIF, par mois
+      },
+      parcoursAbonnement: [
+        {
+          ecran: "recherche",
+          titre: "L’abonnement",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDepart: "Départ",
+            labelArrivee: "Arrivée",
+            labelDate: "Période",
+            labelPrix: "Prix",
+            suffixePrix: " / mois",
+            lienPrix: "Voir mon prix",
+            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit."
+          },
+          jury: {
+            voit: "Le prix plein de l’abonnement mensuel ({prixPlein}) et le même lien « Voir mon prix ».",
+            coulisses: "Le même service de droits tarifaires s’applique aux billets et aux abonnements : une seule vérification pour les deux.",
+            frein: "Financier perçu : pour rentrer chaque week-end, l’abonnement plein tarif paraît hors de portée.",
+            moment: 2
+          }
+        },
+        { reprendre: "explication" },
+        { reprendre: "accord" },
+        { reprendre: "verification" },
+        {
+          reprendre: "resultat",
+          voyageur: {
+            labelTrain: "Votre abonnement",
+            suffixePrix: " / mois",
+            economie: "Vous économisez {economie} par mois.",
+            note: "Ce prix s’applique chaque mois, jusqu’au {dateFin}.",
+            bouton: "Payer mon abonnement"
+          },
+          jury: {
+            voit: "La formule, les gares, la période et le prix mensuel confirmé : {prix} au lieu de {prixPlein}.",
+            frein: "Financier : {prix} par mois pour rentrer chaque week-end, moins cher que le covoiturage et sans contrainte d’horaire."
+          }
+        },
+        {
+          reprendre: "billet",
+          titre: "L’abonnement chargé",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDate: "Période",
+            suffixePrix: " / mois",
+            altQr: "Code QR de l’abonnement (factice)",
+            boutonImprimer: "Imprimer mon abonnement",
+            messageImpression: "Votre abonnement est prêt à être imprimé.",
+            bouton: ""
+          },
+          jury: {
+            voit: "Un abonnement ordinaire, identique à celui de n’importe quel abonné, à garder sur le téléphone ou à imprimer.",
+            coulisses: "L’abonnement porte un niveau de tarif neutre. La version imprimée sert aussi aux personnes sans smartphone.",
+            frein: "Rien à montrer, rien à justifier, et une version papier pour ceux qui en ont besoin.",
+            moment: 4
+          }
+        }
+      ],
+      parcoursReabonnement: [
+        {
+          ecran: "reabonnement",
+          titre: "Le réabonnement",
+          voyageur: {
+            titre: "Votre abonnement",
+            texte: "Votre abonnement de novembre se termine le 30 novembre.",
+            statut: "Votre tarif est toujours valable jusqu’au {dateFin}. Rien à vérifier, rien à envoyer.",
+            bouton: "Me réabonner pour décembre"
+          },
+          jury: {
+            voit: "Un rappel avant la fin du mois, et le réabonnement en un clic : pas de nouvelle vérification.",
+            coulisses: "Le droit a déjà été vérifié et sa date de fin est connue : aucune nouvelle démarche. Le service revérifiera seul avant la fin du droit.",
+            frein: "Renouvellement : plus de carte qui expire en silence, plus de dossier à refaire.",
+            moment: 6
+          }
+        },
+        {
+          reprendre: "resultat",
+          voyageur: {
+            labelTrain: "Votre abonnement",
+            suffixePrix: " / mois",
+            economie: "Vous économisez {economie} par mois.",
+            note: "Ce prix s’applique chaque mois, jusqu’au {dateFin}.",
+            bouton: "Payer mon abonnement"
+          },
+          jury: {
+            voit: "La formule, les gares, la période et le prix mensuel confirmé : {prix} au lieu de {prixPlein}.",
+            frein: "Le même prix réduit, reconduit sans aucune démarche."
+          }
+        },
+        {
+          reprendre: "billet",
+          titre: "L’abonnement chargé",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDate: "Période",
+            suffixePrix: " / mois",
+            altQr: "Code QR de l’abonnement (factice)",
+            boutonImprimer: "Imprimer mon abonnement",
+            messageImpression: "Votre abonnement est prêt à être imprimé.",
+            bouton: ""
+          },
+          jury: {
+            voit: "Un abonnement ordinaire, identique à celui de n’importe quel abonné, à garder sur le téléphone ou à imprimer.",
+            coulisses: "L’abonnement porte un niveau de tarif neutre. La version imprimée sert aussi aux personnes sans smartphone.",
+            frein: "Rien à montrer, rien à justifier, et une version papier pour ceux qui en ont besoin.",
+            moment: 4
+          }
+        }
+      ],
       etapes: [
         {
           ecran: "besoin",
@@ -170,6 +299,24 @@ window.CONFIG = {
           }
         },
         {
+          ecran: "accueil",
+          titre: "Le choix",
+          voyageur: {
+            titre: "Que voulez-vous faire ?",
+            titreBillet: "Un trajet",
+            boutonBillet: "Acheter un billet",
+            titreAbonnement: "Des trajets réguliers",
+            boutonAbonnement: "Prendre un abonnement",
+            boutonReabonnement: "Me réabonner"
+          },
+          jury: {
+            voit: "Deux chemins au même endroit : un billet pour un trajet, ou un abonnement pour des trajets réguliers.",
+            coulisses: "Le droit vérifié une seule fois s’applique aux billets comme aux abonnements. Le parcours de vérification est le même.",
+            frein: "Cognitif : un seul point d’entrée, quel que soit le besoin.",
+            moment: 2
+          }
+        },
+        {
           ecran: "recherche",
           titre: "La recherche",
           voyageur: {
@@ -179,7 +326,7 @@ window.CONFIG = {
             labelDate: "Date",
             labelPrix: "Prix",
             lienPrix: "Voir mon prix",
-            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit, pour tout le monde."
+            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit."
           },
           jury: {
             voit: "Le prix plein ({prixPlein}) et, juste à côté, un lien « Voir mon prix » affiché pour TOUS les voyageurs.",
@@ -193,11 +340,11 @@ window.CONFIG = {
           titre: "La démarche",
           voyageur: {
             titre: "Votre prix en 1 minute",
-            texte: "Nous cherchons le prix qui correspond à votre situation.",
+            texte: "Nous nous connectons à {connexion} pour trouver le prix qui correspond à votre situation.",
             labelDemarche: "Comment ça marche",
             demarche: [
-              "Vous vous connectez avec {connexion}.",
-              "Nous cherchons le prix en fonction de votre situation.",
+              "Vous donnez votre accord.",
+              "Nous nous connectons à {connexion} et cherchons le prix en fonction de votre situation.",
               "Votre prix s’affiche. Il s’applique ensuite à tous vos trajets."
             ],
             engagement: "Nous ne consultons que les éléments essentiels au calcul de votre prix. Rien d’autre.",
@@ -218,7 +365,6 @@ window.CONFIG = {
             legende: "Êtes-vous d’accord ?",
             caseAccord: "J’accepte que {service} consulte, via {connexion}, les seuls éléments nécessaires au calcul de mon prix.",
             engagement: "Aucun autre document n’est consulté. Aucune information n’est conservée, à part la date de fin de votre tarif.",
-            note: "Vous pourrez retirer votre accord à tout moment, dans « Mes accords ».",
             erreur: "Cochez la case pour continuer.",
             bouton: "Continuer avec {connexion}"
           },
@@ -226,25 +372,6 @@ window.CONFIG = {
             voit: "Une case à cocher claire, jamais pré-cochée, et un bouton « Continuer avec FranceConnect ».",
             coulisses: "L’accord est enregistré avec sa date. Il autorise une seule consultation, puis les revérifications futures.",
             frein: "Peur d’être fiché : l’engagement est explicite, et la personne sait comment retirer son accord.",
-            moment: 3
-          }
-        },
-        {
-          ecran: "connexion",
-          titre: "La connexion",
-          voyageur: {
-            messages: [
-              "Connexion sécurisée avec {connexion}…",
-              "Nous cherchons votre prix en fonction de votre situation…"
-            ],
-            termine: "C’est prêt.",
-            bouton: "Voir le résultat",
-            note: "Démonstration : aucune connexion réelle."
-          },
-          jury: {
-            voit: "Une seule connexion FranceConnect, puis une roue qui tourne pendant la recherche. Aucun document à choisir, aucun justificatif à envoyer.",
-            coulisses: "FranceConnect prouve QUI est la personne. Le service interroge alors {sourceJury} via API Particulier : oui/non + date de fin.",
-            frein: "Cognitif : pas de compte à créer, pas de pièce à scanner, pas de document à identifier soi-même.",
             moment: 3
           }
         },
@@ -258,7 +385,7 @@ window.CONFIG = {
           },
           jury: {
             voit: "« Tarif réduit accordé » et sa date de fin. Aucun document, aucun statut affiché.",
-            coulisses: "Réponse : OUI + date de fin. Le service ne garde qu’un identifiant pseudonyme, un niveau de tarif et la date de fin.",
+            coulisses: "Le service se connecte à FranceConnect, puis interroge {sourceJury} via API Particulier. Réponse : OUI + date de fin. Il ne garde qu’un identifiant pseudonyme, un niveau de tarif et la date de fin.",
             frein: "Délai : quelques secondes au lieu de plusieurs semaines (dossier, courrier, carte postale).",
             moment: 3
           }
@@ -293,6 +420,8 @@ window.CONFIG = {
             tarif: "Votre tarif",
             labelPrix: "Prix payé",
             altQr: "Code QR du billet (factice)",
+            boutonImprimer: "Imprimer mon billet",
+            messageImpression: "Votre billet est prêt à être imprimé.",
             bouton: "Passer au contrôle"
           },
           jury: {
@@ -362,6 +491,130 @@ window.CONFIG = {
         prixPlein: 19.80                       // prix FICTIF
       },
       reponseSimulee: { droit: true, dateFin: "2031-03-31" },
+      abonnement: {
+        formule: "Abonnement mensuel",
+        depart: "Hyères",
+        arrivee: "Marseille Saint-Charles",
+        date: "décembre 2026",
+        mention: "Trajets illimités, aller et retour",
+        prixPlein: 89.00                      // prix FICTIF, par mois
+      },
+      parcoursAbonnement: [
+        {
+          ecran: "recherche",
+          titre: "L’abonnement",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDepart: "Départ",
+            labelArrivee: "Arrivée",
+            labelDate: "Période",
+            labelPrix: "Prix",
+            suffixePrix: " / mois",
+            lienPrix: "Voir mon prix",
+            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit."
+          },
+          jury: {
+            voit: "Le prix plein de l’abonnement mensuel ({prixPlein}) et le même lien « Voir mon prix ».",
+            coulisses: "Le même service de droits tarifaires s’applique aux billets et aux abonnements : une seule vérification pour les deux.",
+            frein: "Financier perçu : pour voir ses petits-enfants chaque semaine, l’abonnement plein tarif paraît trop cher.",
+            moment: 2
+          }
+        },
+        { reprendre: "explication" },
+        { reprendre: "accord" },
+        { reprendre: "verification" },
+        {
+          reprendre: "resultat",
+          voyageur: {
+            labelTrain: "Votre abonnement",
+            suffixePrix: " / mois",
+            economie: "Vous économisez {economie} par mois.",
+            extras: ["Assistance en gare réservée à chaque trajet, sur simple demande."],
+            note: "Ce prix s’applique chaque mois, jusqu’au {dateFin}.",
+            bouton: "Payer mon abonnement"
+          },
+          jury: {
+            voit: "La formule, les gares, la période et le prix mensuel confirmé : {prix} au lieu de {prixPlein}.",
+            frein: "Financier : {prix} par mois pour un aller-retour chaque semaine. Physique : l’assistance suit l’abonnement."
+          }
+        },
+        {
+          reprendre: "billet",
+          titre: "L’abonnement chargé",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDate: "Période",
+            suffixePrix: " / mois",
+            altQr: "Code QR de l’abonnement (factice)",
+            extras: ["Assistance en gare sur simple demande"],
+            boutonImprimer: "Imprimer mon abonnement",
+            messageImpression: "Votre abonnement est prêt à être imprimé.",
+            bouton: ""
+          },
+          jury: {
+            voit: "Un abonnement ordinaire, identique à celui de n’importe quel abonné, à garder sur le téléphone ou à imprimer.",
+            coulisses: "L’abonnement porte un niveau de tarif neutre. La version imprimée sert aussi aux personnes sans smartphone.",
+            frein: "Rien à montrer, rien à justifier, et une version papier pour ceux qui en ont besoin.",
+            moment: 4
+          }
+        }
+      ],
+      parcoursReabonnement: [
+        {
+          ecran: "reabonnement",
+          titre: "Le réabonnement",
+          voyageur: {
+            titre: "Votre abonnement",
+            texte: "Votre abonnement de novembre se termine le 30 novembre.",
+            statut: "Votre tarif est toujours valable jusqu’au {dateFin}. Rien à vérifier, rien à envoyer.",
+            bouton: "Me réabonner pour décembre"
+          },
+          jury: {
+            voit: "Un rappel avant la fin du mois, et le réabonnement en un clic.",
+            coulisses: "Le droit a déjà été vérifié et sa date de fin est connue : aucune nouvelle démarche. Le service revérifiera seul avant la fin du droit.",
+            frein: "Renouvellement : plus de carte qui expire en silence, plus de dossier à refaire.",
+            moment: 6
+          }
+        },
+        {
+          reprendre: "resultat",
+          voyageur: {
+            labelTrain: "Votre abonnement",
+            suffixePrix: " / mois",
+            economie: "Vous économisez {economie} par mois.",
+            extras: ["Assistance en gare réservée à chaque trajet, sur simple demande."],
+            note: "Ce prix s’applique chaque mois, jusqu’au {dateFin}.",
+            bouton: "Payer mon abonnement"
+          },
+          jury: {
+            voit: "La formule, les gares, la période et le prix mensuel confirmé : {prix} au lieu de {prixPlein}.",
+            frein: "Le même prix réduit et la même assistance, reconduits sans démarche."
+          }
+        },
+        {
+          reprendre: "billet",
+          titre: "L’abonnement chargé",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDate: "Période",
+            suffixePrix: " / mois",
+            altQr: "Code QR de l’abonnement (factice)",
+            extras: ["Assistance en gare sur simple demande"],
+            boutonImprimer: "Imprimer mon abonnement",
+            messageImpression: "Votre abonnement est prêt à être imprimé.",
+            bouton: ""
+          },
+          jury: {
+            voit: "Un abonnement ordinaire, identique à celui de n’importe quel abonné, à garder sur le téléphone ou à imprimer.",
+            coulisses: "L’abonnement porte un niveau de tarif neutre. La version imprimée sert aussi aux personnes sans smartphone.",
+            frein: "Rien à montrer, rien à justifier, et une version papier pour ceux qui en ont besoin.",
+            moment: 4
+          }
+        }
+      ],
       etapes: [
         {
           ecran: "besoin",
@@ -379,6 +632,24 @@ window.CONFIG = {
           }
         },
         {
+          ecran: "accueil",
+          titre: "Le choix",
+          voyageur: {
+            titre: "Que voulez-vous faire ?",
+            titreBillet: "Un trajet",
+            boutonBillet: "Acheter un billet",
+            titreAbonnement: "Des trajets réguliers",
+            boutonAbonnement: "Prendre un abonnement",
+            boutonReabonnement: "Me réabonner"
+          },
+          jury: {
+            voit: "Deux chemins au même endroit : un billet pour un trajet, ou un abonnement pour des trajets réguliers.",
+            coulisses: "Le droit vérifié une seule fois s’applique aux billets comme aux abonnements. Le parcours de vérification est le même.",
+            frein: "Cognitif : un seul point d’entrée, quel que soit le besoin.",
+            moment: 2
+          }
+        },
+        {
           ecran: "recherche",
           titre: "La recherche",
           voyageur: {
@@ -388,7 +659,7 @@ window.CONFIG = {
             labelDate: "Date",
             labelPrix: "Prix",
             lienPrix: "Voir mon prix",
-            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit, pour tout le monde."
+            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit."
           },
           jury: {
             voit: "Le même lien « Voir mon prix » que tout le monde.",
@@ -402,11 +673,11 @@ window.CONFIG = {
           titre: "La démarche",
           voyageur: {
             titre: "Votre prix en 1 minute",
-            texte: "Nous cherchons le prix qui correspond à votre situation.",
+            texte: "Nous nous connectons à {connexion} pour trouver le prix qui correspond à votre situation.",
             labelDemarche: "Comment ça marche",
             demarche: [
-              "Vous vous connectez avec {connexion}.",
-              "Nous cherchons le prix en fonction de votre situation.",
+              "Vous donnez votre accord.",
+              "Nous nous connectons à {connexion} et cherchons le prix en fonction de votre situation.",
               "Votre prix s’affiche. Il s’applique ensuite à tous vos trajets."
             ],
             engagement: "Nous ne consultons que les éléments essentiels au calcul de votre prix. Rien d’autre.",
@@ -427,7 +698,6 @@ window.CONFIG = {
             legende: "Êtes-vous d’accord ?",
             caseAccord: "J’accepte que {service} consulte, via {connexion}, les seuls éléments nécessaires au calcul de mon prix.",
             engagement: "Aucun autre document n’est consulté. Aucune information n’est conservée, à part la date de fin de votre tarif.",
-            note: "Vous pourrez retirer votre accord à tout moment, dans « Mes accords ».",
             erreur: "Cochez la case pour continuer.",
             bouton: "Continuer avec {connexion}"
           },
@@ -435,25 +705,6 @@ window.CONFIG = {
             voit: "Accord explicite, jamais pré-coché.",
             coulisses: "L’accord est daté et peut être retiré.",
             frein: "Peur d’être fiché.",
-            moment: 3
-          }
-        },
-        {
-          ecran: "connexion",
-          titre: "La connexion",
-          voyageur: {
-            messages: [
-              "Connexion sécurisée avec {connexion}…",
-              "Nous cherchons votre prix en fonction de votre situation…"
-            ],
-            termine: "C’est prêt.",
-            bouton: "Voir le résultat",
-            note: "Démonstration : aucune connexion réelle."
-          },
-          jury: {
-            voit: "Une seule connexion FranceConnect, puis la recherche.",
-            coulisses: "Le service interroge {sourceJury} : oui/non + date de fin. La carte mobilité inclusion est souvent attribuée pour plusieurs années.",
-            frein: "Cognitif : rien à fournir, rien à scanner.",
             moment: 3
           }
         },
@@ -510,6 +761,8 @@ window.CONFIG = {
             labelPrix: "Prix payé",
             extras: ["Assistance en gare réservée"],
             altQr: "Code QR du billet (factice)",
+            boutonImprimer: "Imprimer mon billet",
+            messageImpression: "Votre billet est prêt à être imprimé.",
             bouton: "Passer au contrôle"
           },
           jury: {
@@ -557,6 +810,131 @@ window.CONFIG = {
         prixPlein: 21.20                       // prix FICTIF
       },
       reponseSimulee: { droit: false, dateFin: null },
+      abonnement: {
+        formule: "Abonnement mensuel travail",
+        depart: "Les Arcs – Draguignan",
+        arrivee: "Saint-Raphaël Valescure",
+        date: "décembre 2026",
+        mention: "Trajets illimités entre domicile et travail",
+        prixPlein: 62.00                      // prix FICTIF, par mois
+      },
+      parcoursAbonnement: [
+        {
+          ecran: "recherche",
+          titre: "L’abonnement",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelDepart: "Départ",
+            labelArrivee: "Arrivée",
+            labelDate: "Période",
+            labelPrix: "Prix",
+            suffixePrix: " / mois",
+            lienPrix: "Voir mon prix",
+            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit."
+          },
+          jury: {
+            voit: "Marc va aussi travailler chaque jour à Saint-Raphaël. Prix plein de l’abonnement : {prixPlein} par mois.",
+            coulisses: "Le même service de droits tarifaires s’applique aux billets et aux abonnements : une seule vérification pour les deux.",
+            frein: "Financier perçu : Marc pense que la voiture reste moins chère pour aller au travail.",
+            moment: 2
+          }
+        },
+        { reprendre: "explication" },
+        { reprendre: "accord" },
+        { reprendre: "verification", voyageur: { bouton: "Voir ma meilleure formule" } },
+        {
+          ecran: "meilleurPrix",
+          titre: "La meilleure formule",
+          voyageur: {
+            titre: "Votre meilleure formule",
+            texte: "Nous avons choisi pour vous la formule la moins chère pour aller au travail.",
+            labelRecommande: "Notre choix pour vous",
+            labelPourquoi: "Pourquoi ce choix",
+            titreAutres: "Les autres formules",
+            // Formules proposées (prix FICTIFS par mois). La moins chère est recommandée.
+            offres: [
+              { libelle: "Abonnement mensuel travail", prix: 62.00,
+                raison: "Votre employeur doit vous en rembourser la moitié : il vous revient à 31 € par mois." },
+              { libelle: "Carte de réduction régionale et billets (20 allers-retours)", prix: 147.00 },
+              { libelle: "Billets au prix habituel (20 allers-retours)", prix: 196.00 }
+            ],
+            bouton: "Choisir cette formule"
+          },
+          jury: {
+            voit: "Le service choisit pour Marc la formule la moins chère et rappelle que l’employeur en rembourse la moitié.",
+            coulisses: "Le moteur compare les formules ouvertes à tous et recommande la moins chère pour des trajets quotidiens.",
+            frein: "Méconnaissance des offres : la prise en charge de la moitié de l’abonnement par l’employeur est une obligation, souvent ignorée.",
+            moment: 2
+          }
+        },
+        {
+          ecran: "billet",
+          titre: "L’abonnement chargé",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelTrajet: "Trajet",
+            labelDate: "Période",
+            labelTarif: "Tarif",
+            tarif: "Abonnement travail",
+            labelPrix: "Prix payé",
+            suffixePrix: " / mois",
+            note: "Votre employeur vous rembourse la moitié de ce prix.",
+            altQr: "Code QR de l’abonnement (factice)",
+            boutonImprimer: "Imprimer mon abonnement",
+            messageImpression: "Votre abonnement est prêt à être imprimé."
+          },
+          jury: {
+            voit: "L’abonnement travail, à garder sur le téléphone ou à imprimer.",
+            coulisses: "Abonnement au prix habituel : aucun niveau de tarif réduit. L’attestation pour l’employeur est générée avec l’abonnement.",
+            frein: "Méconnaissance des offres : Marc paie 31 € par mois après remboursement, sans l’avoir su avant.",
+            moment: 4
+          }
+        }
+      ],
+      parcoursReabonnement: [
+        {
+          ecran: "reabonnement",
+          titre: "Le réabonnement",
+          voyageur: {
+            titre: "Votre abonnement",
+            texte: "Votre abonnement travail de novembre se termine le 30 novembre.",
+            statut: "Même formule, même prix : votre employeur continue de vous en rembourser la moitié.",
+            bouton: "Me réabonner pour décembre"
+          },
+          jury: {
+            voit: "Un rappel avant la fin du mois, et le réabonnement en un clic.",
+            coulisses: "Le droit a déjà été vérifié et sa date de fin est connue : aucune nouvelle démarche. Le service revérifiera seul avant la fin du droit.",
+            frein: "Renouvellement : plus de carte qui expire en silence, plus de dossier à refaire.",
+            moment: 6
+          }
+        },
+        {
+          ecran: "billet",
+          titre: "L’abonnement chargé",
+          voyageur: {
+            titre: "Votre abonnement",
+            labelFormule: "Formule",
+            labelTrajet: "Trajet",
+            labelDate: "Période",
+            labelTarif: "Tarif",
+            tarif: "Abonnement travail",
+            labelPrix: "Prix payé",
+            suffixePrix: " / mois",
+            note: "Votre employeur vous rembourse la moitié de ce prix.",
+            altQr: "Code QR de l’abonnement (factice)",
+            boutonImprimer: "Imprimer mon abonnement",
+            messageImpression: "Votre abonnement est prêt à être imprimé."
+          },
+          jury: {
+            voit: "L’abonnement travail, à garder sur le téléphone ou à imprimer.",
+            coulisses: "Abonnement au prix habituel : aucun niveau de tarif réduit. L’attestation pour l’employeur est générée avec l’abonnement.",
+            frein: "Méconnaissance des offres : Marc paie 31 € par mois après remboursement, sans l’avoir su avant.",
+            moment: 4
+          }
+        }
+      ],
       // Abonnements et cartes ouverts à tous, proposés quand le tarif réduit n'est pas accordé (FICTIFS).
       abonnements: [
         { nom: "Carte de réduction régionale", pour: "Ouverte à tous", avantage: "−25 % sur tous vos trajets dans la région.", prix: "30 € par an" },
@@ -587,6 +965,24 @@ window.CONFIG = {
           }
         },
         {
+          ecran: "accueil",
+          titre: "Le choix",
+          voyageur: {
+            titre: "Que voulez-vous faire ?",
+            titreBillet: "Un trajet",
+            boutonBillet: "Acheter un billet",
+            titreAbonnement: "Des trajets réguliers",
+            boutonAbonnement: "Prendre un abonnement",
+            boutonReabonnement: "Me réabonner"
+          },
+          jury: {
+            voit: "Deux chemins au même endroit : un billet pour un trajet, ou un abonnement pour des trajets réguliers.",
+            coulisses: "Le droit vérifié une seule fois s’applique aux billets comme aux abonnements. Le parcours de vérification est le même.",
+            frein: "Cognitif : un seul point d’entrée, quel que soit le besoin.",
+            moment: 2
+          }
+        },
+        {
           ecran: "recherche",
           titre: "La recherche",
           voyageur: {
@@ -596,7 +992,7 @@ window.CONFIG = {
             labelDate: "Date",
             labelPrix: "Prix",
             lienPrix: "Voir mon prix",
-            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit, pour tout le monde."
+            aideLien: "Jeune, famille, senior… Toutes les réductions au même endroit."
           },
           jury: {
             voit: "Le même lien « Voir mon prix » que tout le monde.",
@@ -610,11 +1006,11 @@ window.CONFIG = {
           titre: "La démarche",
           voyageur: {
             titre: "Votre prix en 1 minute",
-            texte: "Nous cherchons le prix qui correspond à votre situation.",
+            texte: "Nous nous connectons à {connexion} pour trouver le prix qui correspond à votre situation.",
             labelDemarche: "Comment ça marche",
             demarche: [
-              "Vous vous connectez avec {connexion}.",
-              "Nous cherchons le prix en fonction de votre situation.",
+              "Vous donnez votre accord.",
+              "Nous nous connectons à {connexion} et cherchons le prix en fonction de votre situation.",
               "Votre prix s’affiche. Il s’applique ensuite à tous vos trajets."
             ],
             engagement: "Nous ne consultons que les éléments essentiels au calcul de votre prix. Rien d’autre.",
@@ -635,7 +1031,6 @@ window.CONFIG = {
             legende: "Êtes-vous d’accord ?",
             caseAccord: "J’accepte que {service} consulte, via {connexion}, les seuls éléments nécessaires au calcul de mon prix.",
             engagement: "Aucun autre document n’est consulté. Aucune information n’est conservée, à part la date de fin de votre tarif.",
-            note: "Vous pourrez retirer votre accord à tout moment, dans « Mes accords ».",
             erreur: "Cochez la case pour continuer.",
             bouton: "Continuer avec {connexion}"
           },
@@ -643,25 +1038,6 @@ window.CONFIG = {
             voit: "Accord explicite, jamais pré-coché.",
             coulisses: "L’accord est daté et peut être retiré.",
             frein: "Peur d’être fiché.",
-            moment: 3
-          }
-        },
-        {
-          ecran: "connexion",
-          titre: "La connexion",
-          voyageur: {
-            messages: [
-              "Connexion sécurisée avec {connexion}…",
-              "Nous cherchons votre prix en fonction de votre situation…"
-            ],
-            termine: "C’est prêt.",
-            bouton: "Voir le résultat",
-            note: "Démonstration : aucune connexion réelle."
-          },
-          jury: {
-            voit: "Une seule connexion FranceConnect, puis la recherche.",
-            coulisses: "Le service interroge {sourceJury}.",
-            frein: "Cognitif : rien à fournir.",
             moment: 3
           }
         },
@@ -726,6 +1102,10 @@ window.CONFIG = {
     titrePage: "Mon Juste Prix — démonstration",
     lienEvitement: "Aller à la démonstration",
     choisirScenario: "Scénario",
+    choisirParcours: "Parcours",
+    parcoursBillet: "Billet",
+    parcoursAbonnement: "Abonnement",
+    parcoursReabonnement: "Réabonnement",
     precedent: "Précédent",
     suivant: "Suivant",
     recommencer: "Recommencer",

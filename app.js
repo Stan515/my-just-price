@@ -26,7 +26,8 @@
     s: 0,          // index du scénario
     e: 0,          // index de l'étape
     accord: false, // case d'accord cochée
-    accordRetire: false
+    accordRetire: false,
+    parcours: "billet" // billet | abonnement | reabonnement
   };
   var minuteries = [];
 
@@ -52,7 +53,42 @@
   function arrondi(n) { return Math.round(n * 100) / 100; }
 
   function scenario() { return scenarios[etat.s]; }
-  function etape() { return scenario().etapes[etat.e]; }
+
+  // Étapes du parcours choisi : le début commun (jusqu'à l'écran « accueil »),
+  // puis la branche billet, abonnement ou réabonnement.
+  function etapesActives() {
+    var sc = scenario();
+    var base = sc.etapes || [];
+    var branche = etat.parcours === "abonnement" ? sc.parcoursAbonnement
+      : etat.parcours === "reabonnement" ? sc.parcoursReabonnement : null;
+    var iAccueil = -1;
+    base.forEach(function (e, i) { if (iAccueil < 0 && e.ecran === "accueil") iAccueil = i; });
+    var liste = (branche && iAccueil >= 0) ? base.slice(0, iAccueil + 1).concat(branche) : base;
+    return liste.map(function (e) { return resoudre(e, sc); });
+  }
+
+  // { reprendre: "explication" } = recopier l'étape du même type du parcours billet,
+  // en remplaçant seulement ce qui est précisé.
+  function resoudre(e, sc) {
+    if (!e.reprendre) return e;
+    var modele = (sc.etapes || []).filter(function (x) { return x.ecran === e.reprendre; })[0] || { ecran: e.reprendre };
+    return {
+      ecran: modele.ecran,
+      titre: e.titre || modele.titre,
+      voyageur: Object.assign({}, modele.voyageur || {}, e.voyageur || {}),
+      jury: Object.assign({}, modele.jury || {}, e.jury || {})
+    };
+  }
+
+  function etape() { return etapesActives()[etat.e]; }
+  function aDesParcours(sc) { return !!(sc.parcoursAbonnement || sc.parcoursReabonnement); }
+
+  // Le produit acheté : le trajet (billet) ou l'abonnement
+  function produit(sc) {
+    sc = sc || scenario();
+    if (etat.parcours !== "billet" && sc.abonnement) return Object.assign({}, sc.trajet, { heureDepart: "", heureArrivee: "" }, sc.abonnement);
+    return sc.trajet;
+  }
   function publicDe(sc) {
     return (C.publics || []).filter(function (p) { return p.id === sc.public; })[0] || {};
   }
@@ -60,16 +96,19 @@
   function valeurs(sc) {
     sc = sc || scenario();
     var pub = publicDe(sc);
-    var plein = sc.trajet.prixPlein;
-    var prix = arrondi(plein * (1 - (pub.reduction || 0)));
+    var p = produit(sc);
+    var droit = !!(sc.reponseSimulee && sc.reponseSimulee.droit);
+    var plein = p.prixPlein;
+    var prix = droit ? arrondi(plein * (1 - (pub.reduction || 0))) : plein;
     return {
       nom: sc.persona.nom,
       age: sc.persona.age,
-      depart: sc.trajet.depart,
-      arrivee: sc.trajet.arrivee,
-      date: sc.trajet.date,
-      heureDepart: sc.trajet.heureDepart,
-      heureArrivee: sc.trajet.heureArrivee,
+      depart: p.depart,
+      arrivee: p.arrivee,
+      date: p.date,
+      heureDepart: p.heureDepart,
+      heureArrivee: p.heureArrivee,
+      formule: p.formule || "",
       prixPlein: euros(plein),
       prix: euros(prix),
       economie: euros(arrondi(plein - prix)),
@@ -182,24 +221,57 @@
       ];
     },
 
-    recherche: function (v) {
+    accueil: function (v) {
       var sc = scenario();
+      var choix = function (mode, texte, principal) {
+        return h("button", { type: "button", class: "btn btn-large " + (principal ? "btn-principal" : "btn-secondaire") + (etat.parcours === mode ? " choisi" : ""),
+          "aria-pressed": etat.parcours === mode ? "true" : "false", text: t(texte), onclick: function () { choisirParcours(mode); } });
+      };
+      return [
+        titreEcran(v.titre),
+        h("div", { class: "carte-choix" }, [
+          h("h4", { text: t(v.titreBillet) }),
+          v.texteBillet ? h("p", { class: "note", text: t(v.texteBillet) }) : null,
+          choix("billet", v.boutonBillet, true)
+        ]),
+        aDesParcours(sc) ? h("div", { class: "carte-choix" }, [
+          h("h4", { text: t(v.titreAbonnement) }),
+          v.texteAbonnement ? h("p", { class: "note", text: t(v.texteAbonnement) }) : null,
+          sc.parcoursAbonnement ? choix("abonnement", v.boutonAbonnement, true) : null,
+          sc.parcoursReabonnement ? choix("reabonnement", v.boutonReabonnement, false) : null
+        ]) : null
+      ];
+    },
+
+    reabonnement: function (v) {
+      return [
+        titreEcran(v.titre),
+        h("p", { class: "texte-fort", text: t(v.texte) }),
+        v.statut ? h("p", { class: "engagement" }, [
+          h("span", { class: "engagement-icone", "aria-hidden": "true", text: "✓" }),
+          h("span", { text: t(v.statut) })
+        ]) : null,
+        listeExtras(v.extras),
+        boutonPrincipal(v.bouton)
+      ];
+    },
+
+    recherche: function (v) {
+      var p = produit();
       return [
         titreEcran(v.titre),
         h("dl", { class: "fiche-trajet" }, [
-          h("div", {}, [h("dt", { text: t(v.labelDepart) }), h("dd", { text: sc.trajet.depart })]),
-          h("div", {}, [h("dt", { text: t(v.labelArrivee) }), h("dd", { text: sc.trajet.arrivee })]),
-          h("div", {}, [h("dt", { text: t(v.labelDate) }), h("dd", { text: sc.trajet.date })])
+          p.formule ? h("div", {}, [h("dt", { text: t(v.labelFormule) }), h("dd", { text: t(p.formule) })]) : null,
+          h("div", {}, [h("dt", { text: t(v.labelDepart) }), h("dd", { text: p.depart })]),
+          h("div", {}, [h("dt", { text: t(v.labelArrivee) }), h("dd", { text: p.arrivee })]),
+          h("div", {}, [h("dt", { text: t(v.labelDate) }), h("dd", { text: p.date })])
         ]),
         h("div", { class: "carte-train" }, [
-          h("p", { class: "horaires" }, [
-            h("span", { class: "heure", text: sc.trajet.heureDepart }),
-            h("span", { class: "fleche", "aria-hidden": "true", text: "→" }),
-            h("span", { class: "heure", text: sc.trajet.heureArrivee })
-          ]),
+          ligneHoraires(p),
           h("p", { class: "prix-plein" }, [
             h("span", { class: "sr-only", text: t(v.labelPrix) + " : " }),
-            t("{prixPlein}")
+            t("{prixPlein}"),
+            v.suffixePrix ? h("span", { class: "suffixe-prix", text: t(v.suffixePrix) }) : null
           ])
         ]),
         h("div", { class: "lien-prix-zone" }, [
@@ -230,7 +302,7 @@
 
     accord: function (v) {
       var erreur = h("p", { class: "erreur", id: "erreur-accord", role: "alert" });
-      var caseAccord = h("input", { type: "checkbox", id: "case-accord", "aria-describedby": "note-accord erreur-accord" });
+      var caseAccord = h("input", { type: "checkbox", id: "case-accord", "aria-describedby": v.note ? "note-accord erreur-accord" : "erreur-accord" });
       caseAccord.checked = etat.accord;
       caseAccord.addEventListener("change", function () {
         etat.accord = caseAccord.checked;
@@ -244,7 +316,7 @@
             caseAccord,
             h("label", { for: "case-accord", text: t(v.caseAccord) })
           ]),
-          h("p", { class: "note", id: "note-accord", text: t(v.note) })
+          v.note ? h("p", { class: "note", id: "note-accord", text: t(v.note) }) : null
         ]),
         v.engagement ? h("p", { class: "engagement" }, [
           h("span", { class: "engagement-icone", "aria-hidden": "true", text: "✓" }),
@@ -312,7 +384,7 @@
     },
 
     resultat: function (v) {
-      var sc = scenario();
+      var p = produit();
       var val = valeurs();
       var nouveau = h("span", { class: "prix-nouveau-valeur", "aria-hidden": "true", text: reduitMouvement ? val.prix : val.prixPlein });
       var ancien = h("span", { class: "prix-ancien-valeur" + (reduitMouvement ? " barre-prix" : ""), "aria-hidden": "true", text: val.prixPlein });
@@ -321,19 +393,17 @@
         h("div", { class: "carte-train carte-train-resume" }, [
           h("div", {}, [
             v.labelTrain ? h("p", { class: "petit-label", text: t(v.labelTrain) }) : null,
-            h("p", { class: "train-gares", text: sc.trajet.depart + " → " + sc.trajet.arrivee }),
-            h("p", { class: "train-date", text: sc.trajet.date })
+            p.formule ? h("p", { class: "train-gares", text: t(p.formule) }) : null,
+            h("p", { class: p.formule ? "train-date" : "train-gares", text: p.depart + " → " + p.arrivee }),
+            h("p", { class: "train-date", text: p.date })
           ]),
-          h("p", { class: "horaires" }, [
-            h("span", { class: "heure", text: sc.trajet.heureDepart }),
-            h("span", { class: "fleche", "aria-hidden": "true", text: "→" }),
-            h("span", { class: "heure", text: sc.trajet.heureArrivee })
-          ])
+          ligneHoraires(p)
         ]),
         h("div", { class: "bloc-prix" }, [
           h("p", { class: "sr-only", text: t(T.prixLecteur) }),
           h("p", { class: "prix-ancien", "aria-hidden": "true" }, [h("span", { class: "petit-label", text: t(v.labelAncien) }), ancien]),
-          h("p", { class: "prix-nouveau", "aria-hidden": "true" }, [h("span", { class: "petit-label", text: t(v.labelNouveau) }), nouveau])
+          h("p", { class: "prix-nouveau", "aria-hidden": "true" }, [h("span", { class: "petit-label", text: t(v.labelNouveau) }), nouveau,
+            v.suffixePrix ? h("span", { class: "suffixe-prix", text: t(v.suffixePrix) }) : null])
         ]),
         h("p", { class: "economie", text: t(v.economie) }),
         listeExtras(v.extras),
@@ -360,20 +430,30 @@
 
     billet: function (v) {
       var sc = scenario();
+      var p = produit();
+      var message = h("p", { class: "confirmation", role: "status" });
+      var imprimer = v.boutonImprimer ? h("button", { type: "button", class: "btn btn-secondaire btn-large btn-imprimer", onclick: function () {
+        message.textContent = t(v.messageImpression);
+        document.body.classList.add("impression-billet");
+        try { window.print(); } catch (err) { /* impression indisponible dans cet affichage */ }
+        setTimeout(function () { document.body.classList.remove("impression-billet"); }, 500);
+      } }, [h("span", { class: "icone-imprimante", "aria-hidden": "true" }), t(v.boutonImprimer)]) : null;
       return [
         titreEcran(v.titre),
         h("div", { class: "billet" }, [
           h("dl", { class: "billet-infos" }, [
-            h("div", {}, [h("dt", { text: t(v.labelTrajet) }), h("dd", { text: sc.trajet.depart + " → " + sc.trajet.arrivee })]),
-            h("div", {}, [h("dt", { text: t(v.labelDate) }), h("dd", { text: sc.trajet.date + " · " + sc.trajet.heureDepart })]),
+            p.formule ? h("div", {}, [h("dt", { text: t(v.labelFormule) }), h("dd", { text: t(p.formule) })]) : null,
+            h("div", {}, [h("dt", { text: t(v.labelTrajet) }), h("dd", { text: p.depart + " → " + p.arrivee })]),
+            h("div", {}, [h("dt", { text: t(v.labelDate) }), h("dd", { text: p.date + (p.heureDepart ? " · " + p.heureDepart : "") })]),
             h("div", {}, [h("dt", { text: t(v.labelTarif) }), h("dd", { text: t(v.tarif) })]),
-            h("div", {}, [h("dt", { text: t(v.labelPrix) }), h("dd", { text: t("{prix}") })])
+            h("div", {}, [h("dt", { text: t(v.labelPrix) }), h("dd", { text: t("{prix}") + (v.suffixePrix ? t(v.suffixePrix) : "") })])
           ]),
-          h("div", { class: "billet-qr" }, [fauxQR(sc.id + sc.trajet.depart, t(v.altQr))])
+          h("div", { class: "billet-qr" }, [fauxQR(sc.id + etat.parcours + p.depart, t(v.altQr))])
         ]),
         listeExtras(v.extras),
         v.note ? h("p", { class: "note", text: t(v.note) }) : null,
-        boutonPrincipal(v.bouton)
+        imprimer ? h("div", { class: "ecran-actions ecran-actions-imprimer" }, [imprimer, message]) : null,
+        v.bouton ? boutonPrincipal(v.bouton) : null
       ];
     },
 
@@ -415,7 +495,7 @@
 
     meilleurPrix: function (v) {
       var sc = scenario();
-      var offres = (sc.autresOffres || []).slice().sort(function (a, b) { return a.prix - b.prix; });
+      var offres = (v.offres || sc.autresOffres || []).slice().sort(function (a, b) { return a.prix - b.prix; });
       var reco = offres[0], autres = offres.slice(1);
       return [
         titreEcran(v.titre),
@@ -458,6 +538,18 @@
       ];
     }
   };
+
+  // Horaires du train, ou mention de l'abonnement (« Trajets illimités »)
+  function ligneHoraires(p) {
+    if (p.heureDepart) {
+      return h("p", { class: "horaires" }, [
+        h("span", { class: "heure", text: p.heureDepart }),
+        h("span", { class: "fleche", "aria-hidden": "true", text: "→" }),
+        h("span", { class: "heure", text: p.heureArrivee })
+      ]);
+    }
+    return p.mention ? h("p", { class: "mention-abonnement", text: t(p.mention) }) : null;
+  }
 
   // Liste d'avantages avec coche (facultative)
   function listeExtras(extras, titre) {
@@ -505,7 +597,7 @@
   /* ---------- Affichage ---------- */
   function afficher(focusTelephone) {
     nettoyerMinuteries();
-    var sc = scenario(), et = etape(), total = sc.etapes.length;
+    var liste = etapesActives(), et = liste[etat.e], total = liste.length;
     var v = et.voyageur || {};
 
     // Téléphone
@@ -543,7 +635,7 @@
   }
 
   function aller(delta, depuisTelephone) {
-    var total = scenario().etapes.length;
+    var total = etapesActives().length;
     var cible = etat.e + delta;
     if (cible < 0 || cible >= total) return;
     // L'accord doit être donné pour aller au-delà de l'étape « accord »
@@ -578,7 +670,27 @@
 
   function changerScenario(i) {
     etat.s = i;
+    if (!aDesParcours(scenario())) etat.parcours = "billet";
+    majChoixParcours();
     recommencer();
+  }
+
+  // Choix sur l'écran d'accueil du téléphone : on continue dans la branche choisie
+  function choisirParcours(mode) {
+    etat.parcours = mode;
+    majChoixParcours();
+    etat.e += 1;
+    afficher(true);
+  }
+
+  function majChoixParcours() {
+    var sel = $("choix-parcours");
+    var sc = scenario();
+    Array.prototype.forEach.call(sel.options, function (o) {
+      o.disabled = (o.value === "abonnement" && !sc.parcoursAbonnement) || (o.value === "reabonnement" && !sc.parcoursReabonnement);
+    });
+    sel.value = etat.parcours;
+    $("commande-parcours").hidden = !aDesParcours(sc);
   }
 
   /* ---------- Mode présentation ---------- */
@@ -636,6 +748,13 @@
     });
     choix.addEventListener("change", function () { changerScenario(Number(choix.value)); });
 
+    $("label-parcours").textContent = T.choisirParcours;
+    var choixP = $("choix-parcours");
+    [["billet", T.parcoursBillet], ["abonnement", T.parcoursAbonnement], ["reabonnement", T.parcoursReabonnement]].forEach(function (o) {
+      choixP.appendChild(h("option", { value: o[0], text: o[1] }));
+    });
+    choixP.addEventListener("change", function () { etat.parcours = choixP.value; recommencer(); });
+
     $("btn-precedent").addEventListener("click", function () { aller(-1, false); });
     $("btn-suivant").addEventListener("click", function () { aller(1, false); });
     $("btn-recommencer").addEventListener("click", recommencer);
@@ -659,10 +778,12 @@
       else if (ev.key === "Escape" && document.body.classList.contains("presentation")) { basculerPresentation(false); }
     });
 
-    // Lien direct vers un scénario : index.html#S4
-    var ancre = (location.hash || "").replace("#", "");
-    scenarios.forEach(function (s, i) { if (s.id === ancre) etat.s = i; });
+    // Lien direct vers un scénario : index.html#S3 ou index.html#S1-abonnement
+    var ancre = (location.hash || "").replace("#", "").split("-");
+    scenarios.forEach(function (s, i) { if (s.id === ancre[0]) etat.s = i; });
+    if (ancre[1] === "abonnement" || ancre[1] === "reabonnement") etat.parcours = ancre[1];
     choix.value = String(etat.s);
+    majChoixParcours();
 
     afficher(false);
   }
