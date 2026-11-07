@@ -381,8 +381,9 @@
         boutonPrincipal(v.bouton)
       ]);
       var messages = (v.messages || []).map(function (m) { return t(m); });
-      // Sans messages (ou mouvements réduits) : le résultat s'affiche tout de suite
-      if (!messages.length || reduitMouvement) {
+      // Sans messages : le résultat s'affiche tout de suite.
+      // Avec « réduire les animations », la roue reste affichée mais ne tourne pas.
+      if (!messages.length) {
         annoncer(t(v.resultatTitre) + ". " + t(v.texte || ""));
         return [resultat];
       }

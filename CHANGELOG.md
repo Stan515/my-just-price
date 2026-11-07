@@ -3,6 +3,7 @@
 ## v0.2.1 — Retour de la roue crantée (7 novembre 2026)
 
 - La roue crantée revient au début de l'écran de résultat, avec « Connexion sécurisée avec FranceConnect… » puis « Nous cherchons votre prix en fonction de votre situation… ». Le résultat s'affiche ensuite. Elle n'a plus d'étape à elle : la démo garde le même nombre d'étapes. Elle est présente dans tous les parcours (billet, abonnement, conditions non remplies).
+- La roue s'affiche aussi quand l'ordinateur ou le téléphone est réglé sur « réduire les animations ». Elle reste alors immobile, et les messages défilent quand même.
 - « Tarif réduit accordé » est suivi de la phrase « Votre situation permet une réduction. »
 
 ## v0.2 — Module abonnement et réabonnement (7 novembre 2026)
